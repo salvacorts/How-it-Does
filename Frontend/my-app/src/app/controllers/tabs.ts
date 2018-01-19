@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Reviews } from './reviews';
+import { ReviewsController } from './reviews';
 
 
 @Component({
@@ -8,7 +8,4 @@ import { Reviews } from './reviews';
    styleUrls: ['../styles/tabs.css'],
 })
 
-export class Tabs {
-   constructor() {
-   }
-}
+export class TabsController {}

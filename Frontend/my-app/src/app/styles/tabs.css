@@ -13,7 +13,7 @@
 }
 
 /* Card background color */
-.mat-tab-body-wrapper {
+::ng-deep .mat-tab-body-wrapper {
    background-color: #ededed;
 }
 

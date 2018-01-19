@@ -2,8 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { Reviews } from './controllers/reviews';
-import { Tabs } from './controllers/tabs';
+import { ReviewsController } from './controllers/reviews';
+import { TabsController } from './controllers/tabs';
+import { SearchController } from './controllers/search'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { 
   MatInputModule, 
@@ -17,7 +18,7 @@ import {
 
 @NgModule({
   declarations: [
-    Reviews, Tabs
+    ReviewsController, TabsController, SearchController
   ],
   imports: [
     BrowserModule,
@@ -27,9 +28,10 @@ import {
     MatCardModule,
     MatGridListModule,
     MatTabsModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule
   ],
   providers: [],
-  bootstrap: [Tabs]
+  bootstrap: [SearchController, TabsController]
 })
 export class AppModule { }
