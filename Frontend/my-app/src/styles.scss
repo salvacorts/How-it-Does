@@ -26,13 +26,35 @@ h1, h2, h3, h4 {
 .search-panel {
     // position: fixed;
     background-color: #fafafa;
-    min-height: 100px;
+    text-align: center;
+    min-height: 00px;
     width: 100%;
+}
+
+input[type=text] {
+    margin-top: 2%;
+    width: 35%;
+    box-sizing: border-box;
+    border: 0px solid #ccc;
+    border-radius: 2px;
+    font-size: 16px;
+    background-color: white;
+    color: #616161;
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 10px 9px 10px 12px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+input[type=text]:focus {
+    outline-style: none;
+    outline-color: transparent;
+    color: #212121;
 }
 
 .result-panel {
     background-color: #fafafa;
-    min-height: 200px;
+    min-height: 300px;
     width: 100%;
 }
 

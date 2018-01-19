@@ -1,9 +1,22 @@
 /* Align tabs to center */
-::ng-deep .mat-tab-labels{
+::ng-deep .mat-tab-labels {
     justify-content: center; /* align items in Main Axis */
+}
+
+::ng-deep .mat-tab-label {
+   width: 1%;
+   font-size: 16px;
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-tab-label:focus {
+   background-color: transparent;
 }
 
 /* Card background color */
 .mat-tab-body-wrapper {
    background-color: #ededed;
+}
+
+.tab-icon {
+   width: 20%;
 }

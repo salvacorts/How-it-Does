@@ -26,7 +26,8 @@ import {
     BrowserAnimationsModule,
     MatCardModule,
     MatGridListModule,
-    MatTabsModule
+    MatTabsModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [Tabs]
