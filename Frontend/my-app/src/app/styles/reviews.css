@@ -12,6 +12,10 @@ mat-card-content {
    hyphens: auto;
 }
 
+.reviews-container {
+  background-color: #ededed;
+}
+
 /* Create grid */
 .grid-container {
    margin-left: 1%;

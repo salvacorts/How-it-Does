@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { AppComponent } from './app.component';
+import { Reviews } from './controllers/reviews';
+import { Tabs } from './controllers/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { 
   MatInputModule, 
@@ -10,26 +11,24 @@ import {
   MatSelectModule, 
   MatIconModule,
   MatCardModule,
-  MatGridListModule
+  MatGridListModule,
+  MatTabsModule
  } from '@angular/material';
 
 @NgModule({
   declarations: [
-    AppComponent
+    Reviews, Tabs
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     BrowserAnimationsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatIconModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTabsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [Tabs]
 })
 export class AppModule { }

@@ -4,7 +4,7 @@
 
 @include mat-core();
 
-$primary: mat-palette($mat-lime, 500);
+$primary: mat-palette($mat-deep-orange, 500);
 $accent:  mat-palette($mat-lime, 500, A200, A400);
 $warn:    mat-palette($mat-red, 500);
 
@@ -26,14 +26,18 @@ h1, h2, h3, h4 {
 .search-panel {
     // position: fixed;
     background-color: #fafafa;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.0);
     min-height: 100px;
     width: 100%;
 }
 
 .result-panel {
     background-color: #fafafa;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.0);
-    min-height: 100px;
+    min-height: 200px;
+    width: 100%;
+}
+
+.reviews-panel {
+    // position: fixed;
+    background-color: #fafafa;
     width: 100%;
 }

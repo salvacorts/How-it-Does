@@ -1,0 +1,9 @@
+/* Align tabs to center */
+::ng-deep .mat-tab-labels{
+    justify-content: center; /* align items in Main Axis */
+}
+
+/* Card background color */
+.mat-tab-body-wrapper {
+   background-color: #ededed;
+}
