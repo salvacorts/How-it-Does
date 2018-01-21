@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ReviewsController } from './reviews';
-
+import { CardKind } from './cards';
+import { ReviewsService } from '../services/reviewsService';
 
 @Component({
    selector: 'tabs',
@@ -8,4 +8,9 @@ import { ReviewsController } from './reviews';
    styleUrls: ['../styles/tabs.css'],
 })
 
-export class TabsController {}
+export class TabsController {
+   public cardKind = CardKind; // Permite usar el enumerado para llamar a <cards> en el html
+
+   constructor(private reviewsService: ReviewsService) { }
+
+}

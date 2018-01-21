@@ -4,11 +4,21 @@ mat-card-content {
    overflow-wrap: break-word;
    word-wrap: break-word;
    hyphens: auto;
+   font-size: 1em;
 }
 
 mat-card {
   min-height: 80%;
   overflow: hidden;
+}
+
+.avatar {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .reviews-container {
@@ -23,10 +33,10 @@ mat-card {
   justify-content: center;
   align-content: stretch;
   align-items: center;
+  padding-bottom: 2em;
 }
 
 .grid-item {
-  margin: 12px;
   flex: 1;
   align-self: stretch;
   flex-grow: 2;
@@ -34,4 +44,11 @@ mat-card {
   flex-basis: auto;
   max-width: 40%;
   min-width: 40%;
+  padding: 12px 12px 12px 12px;
+}
+
+.empty-container {
+  text-align: center;
+  padding-top: 2.5em;
+  opacity: 0.4;
 }

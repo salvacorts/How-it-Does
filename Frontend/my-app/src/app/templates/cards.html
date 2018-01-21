@@ -1,7 +1,8 @@
-<div class="grid-container">
+<div class="grid-container" *ngIf="reviews.length > 0">
   <div class="grid-item" *ngFor="let review of reviews">
     <mat-card class="card">
       <mat-card-header>
+        <img mat-card-avatar src="{{review.avatar}}">
         <mat-card-title>{{review.author}}</mat-card-title>
         <mat-card-subtitle>{{review.origin}}</mat-card-subtitle>
       </mat-card-header>
@@ -13,4 +14,8 @@
       </mat-card-content>
     </mat-card>
   </div>
+</div>
+
+<div class="empty-container" *ngIf="reviews.length == 0">
+  <h2>No one thinks this is a {{kind}}</h2>
 </div>

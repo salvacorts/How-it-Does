@@ -4,34 +4,34 @@
          Great
          <img src="/assets/images/great.png" class="tab-icon" hspace="10">
       </ng-template>
-      <reviews></reviews>
+      <cards [kind]="cardKind.great"></cards>
    </mat-tab>
-   <mat-tab label="Good">
+   <mat-tab [disabled]="!reviewsService.currentItem">
       <ng-template mat-tab-label>
          Good
          <img src="/assets/images/good.png" class="tab-icon" hspace="10">
       </ng-template>
-      <reviews></reviews>
+      <cards [kind]="cardKind.good"></cards>
    </mat-tab>
-   <mat-tab label="Nice">
+   <mat-tab [disabled]="!reviewsService.currentItem">
       <ng-template mat-tab-label>
          Patchy
          <img src="/assets/images/ok.png" class="tab-icon" hspace="10">
       </ng-template>
-      <reviews></reviews>
+      <cards [kind]="cardKind.patchy"></cards>
    </mat-tab>
-   <mat-tab label="Bad">
+   <mat-tab [disabled]="!reviewsService.currentItem">
       <ng-template mat-tab-label>
          Bad
          <img src="/assets/images/bad.png" class="tab-icon" hspace="10">
       </ng-template>
-      <reviews></reviews>
+      <cards [kind]="cardKind.bad"></cards>
    </mat-tab>
-   <mat-tab label="Crap">
+   <mat-tab [disabled]="!reviewsService.currentItem">
       <ng-template mat-tab-label>
          Crap
          <img src="/assets/images/crap.png" class="tab-icon" hspace="10">
       </ng-template>
-      <reviews></reviews>
+      <cards [kind]="cardKind.crap"></cards>
    </mat-tab>
 </mat-tab-group>

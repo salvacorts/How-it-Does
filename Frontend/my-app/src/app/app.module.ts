@@ -2,9 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { ReviewsController } from './controllers/reviews';
+import { ReviewsService } from './services/reviewsService';
+import { CardsController } from './controllers/cards';
 import { TabsController } from './controllers/tabs';
 import { SearchController } from './controllers/search'
+import { ResultsController } from './controllers/results'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { 
   MatInputModule, 
@@ -18,7 +20,7 @@ import {
 
 @NgModule({
   declarations: [
-    ReviewsController, TabsController, SearchController
+    ReviewsService, TabsController, CardsController, SearchController, ResultsController
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,7 @@ import {
     MatIconModule,
     MatButtonModule
   ],
-  providers: [],
-  bootstrap: [SearchController, TabsController]
+  providers: [ReviewsService],
+  bootstrap: [SearchController, ResultsController, TabsController]
 })
 export class AppModule { }

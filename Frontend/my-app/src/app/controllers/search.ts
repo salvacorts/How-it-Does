@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ReviewsController } from './reviews';
+import { ReviewsService } from '../services/reviewsService';
 
 
 @Component({
@@ -9,6 +9,9 @@ import { ReviewsController } from './reviews';
 })
 
 export class SearchController {
-   constructor() {
+   constructor(private reviewsService: ReviewsService) {}
+
+   Search(inputValue: string) {
+      this.reviewsService.currentItem = inputValue;
    }
 }

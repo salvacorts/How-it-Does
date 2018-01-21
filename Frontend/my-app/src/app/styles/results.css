@@ -1,0 +1,13 @@
+.content {
+   padding-top: 1.2em;
+   color: #212121;
+}
+
+.content h1 {
+   font-size: 1.6em;
+}
+
+.instructions {
+   padding-top: 3em;
+   height: 20em;
+}

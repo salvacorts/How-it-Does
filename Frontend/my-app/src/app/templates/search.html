@@ -1,4 +1,4 @@
 <div class="search-box">
-   <input type="text" name="search" placeholder="Search...">
-   <button class="search-button" mat-raised-button color="primary">Primary</button>
+   <input #input type="text" name="search" placeholder="Search...">
+   <button class="search-button" mat-raised-button color="primary" (click)="Search(input.value)">Search</button>
 </div>
