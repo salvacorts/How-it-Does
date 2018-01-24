@@ -1,5 +1,5 @@
-<div class="content" *ngIf="reviewsService.currentItem">
-   <h1>{{reviewsService.currentItem}}</h1>
+<div class="content" *ngIf="reviewsService.current_item">
+   <h2>{{reviewsService.current_item}}</h2>
    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
    <script>
       (adsbygoogle = window.adsbygoogle || []).push({
@@ -8,6 +8,6 @@
       });
    </script>
 </div>
-<div class="instructions" *ngIf="!reviewsService.currentItem">
+<div class="instructions" *ngIf="!reviewsService.current_item">
    <h2>TODO: Intructions should go here</h2>
 </div>

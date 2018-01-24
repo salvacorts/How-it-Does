@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ReviewsService, Review } from '../services/reviewsService';
 
-
 @Component({
    selector: 'results',
    templateUrl: '../templates/results.html',
@@ -10,6 +9,5 @@ import { ReviewsService, Review } from '../services/reviewsService';
 
 
 export class ResultsController {
-
-   constructor(private reviewsService: ReviewsService) { }
+   constructor(private reviewsService: ReviewsService) {}
 }

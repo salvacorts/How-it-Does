@@ -1,5 +1,8 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Parser, Review } from '../parsers/parser'
+export { Review } from '../parsers/parser';
+
 
 @Injectable() // Singleton
 export class ReviewsService {
@@ -48,32 +51,4 @@ export class ReviewsService {
 
       this.average_rating = rating_sum / reviews.length;
    }
-}
-
-
-class Parser {
-   private url: string;
-
-   constructor(provider: string, protected http: HttpClient) {
-      this.url = `https://api.website.com/${provider}/`;
-   }
-
-   // REF: https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
-   public async RetrieveReviews(pattern: string) {
-      pattern = pattern.replace(" ", "+");
-
-      console.log(this.url + pattern);
-
-      return await this.http.get<Review[]>(this.url + pattern).toPromise();
-   }
-}
-
-
-// REF: https://medium.com/codingthesmartway-com-blog/angular-4-3-httpclient-accessing-rest-web-services-with-angular-2305b8fd654b
-interface Review {
-   origin: string;
-   author: string;
-   avatar: string;
-   rating: number;
-   text: string;
 }

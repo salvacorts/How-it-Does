@@ -19,8 +19,7 @@ import {
  } from '@angular/material';
 
 @NgModule({
-  declarations: [
-    ReviewsService, 
+  declarations: [ 
     TabsController, 
     CardsController, 
     SearchController, 
@@ -35,7 +34,7 @@ import {
     MatGridListModule,
     MatTabsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   providers: [ReviewsService, HttpClientModule],
   bootstrap: [SearchController, ResultsController, TabsController]

@@ -8,8 +8,9 @@ export class Parser {
    }
 
    // REF: https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
+   // REF: https://www.w3schools.com/jsref/jsref_replace.asp
    public async RetrieveReviews(pattern: string) {
-      pattern = pattern.replace(" ", "+");
+      pattern = pattern.replace(/ /g, "+");
 
       console.log(this.url + pattern);
 

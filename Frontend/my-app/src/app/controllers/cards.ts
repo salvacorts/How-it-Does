@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ReviewsService, Review } from '../services/reviewsService';
 
-
 @Component({
   selector: 'cards',
   templateUrl: '../templates/cards.html',
