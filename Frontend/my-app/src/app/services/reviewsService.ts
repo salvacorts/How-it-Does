@@ -1,5 +1,6 @@
-import { Component, Injectable } from '@angular/core';
-
+import { Component, Injectable, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Parser, ParserResponse } from "../parsers/parser";
 
 @Component({
    selector: 'search',
@@ -18,7 +19,20 @@ export class ReviewsService {
 
    public currentItem: string;
 
-   constructor() {
+   private parsers: Array<Parser> = [];
+
+
+   constructor(@Inject(HttpClient) http: HttpClient) {
+      this.parsers.push(new Parser("bestbuy", http));
+      this.parsers.push(new Parser("amazon", http));
+      this.parsers.push(new Parser("ebay", http));
+      this.parsers.push(new Parser("fnac", http));
+      this.parsers.push(new Parser("pccomponentes", http));
+      this.parsers.push(new Parser("coolmod", http));
+      this.parsers.push(new Parser("wallmart", http));
+      this.parsers.push(new Parser("gearbest", http));
+      this.parsers.push(new Parser("aliexpress", http));
+
       this.great_reviews.push(new Review("Blanca", "Ebay", "This ultrasharp is a great size and resolution for working with code and documents, and works well for 1080p video too, displaying it at full resolution without scaling! The anti glare coating works great and isn't as distracting as the u2412m, and the stand is well built and adjusts easily. Color is very accurate, and the thin bezels make the monitor and your content look really great."));
       this.great_reviews.push(new Review("Blanca", "Ebay", "This ultrasharp is a great size and resolution for working with code and documents, and works well for 1080p video too, displaying it at full resolution without scaling! The anti glare coating works great and isn't as distracting as the u2412m, and the stand is well built and adjusts easily. Color is very accurate, and the thin bezels make the monitor and your content look really great."));
       this.great_reviews.push(new Review("Blanca", "Ebay", "Mine came in perfect condition despite some reviewers' poor experiences. I am using this as an extended display with my older Dell SX2210b, which is still dear to me. I chose Dell for the value and love the plethora of usb ports and different display connections built in. The outside dimensions of the U2415 are not much larger than those of the SX2210, yet the display looks so much larger due to the much thinner bezel."));
@@ -40,8 +54,24 @@ export class ReviewsService {
       // this.crap_reviews.push(new Review("Salva", "Amazon", "The Monitor is Excellent.  There was an early problem with the delivery.  The box the monitor came in was crushed on a bottom corner. This transferred to the monitor and the monitor was damaged.  DELL is apparently trying to use CARDBOARD ...to replace molded Styrofoam, ..trying to go Green.  Cardboard in this case was deficient.<br><br>Amazon took care of the problem and I had a new monitor five days later...the damaged one picked up at the same time.<br><br>If you are NOT up to date on HOW to hook up a NEW monitor to your system. The DELL instructions will not help. ZERO.  I had to call my computer guy to find out how to do it.  My Video card has an HDMI socket. The new monitor has an HDMI socket. Get an HDMI cable and connect the monitor and the computer.  The cables included DO NOT include an HDMI cable.  The instructions do not tell you how to make the monitor recognize the computer.  An INVISIBLE button on the lower right bezel on the monitor will get you to the HDMI cable  ..recognition...or one of the other cables.  Use only ONE Cable."));
    }
 
-}
+   private async ClassifyReviews(reviews: ParserResponse) {
+      // TODO: Classify the json on good to bad reviews
+      // for review in response.greatReviews
+      //    this.great_reviews.push(new Review(review.author, review.origin, review.text))
+   }
 
+   public Search(item: string) {
+      this.currentItem = item;
+
+      // REF: https://codecraft.tv/courses/angular/http/http-with-promises/
+      for (let parser of this.parsers) {
+         parser.RetrieveReviews(item).then( reviews => {
+            this.ClassifyReviews(reviews);
+         });
+      }
+   }
+
+}
 
 export class Review {
    public author: string;

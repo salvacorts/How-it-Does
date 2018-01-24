@@ -12,6 +12,6 @@ export class SearchController {
    constructor(private reviewsService: ReviewsService) {}
 
    Search(inputValue: string) {
-      this.reviewsService.currentItem = inputValue;
+      this.reviewsService.Search(inputValue)
    }
 }

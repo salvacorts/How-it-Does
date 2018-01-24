@@ -1,13 +1,13 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ReviewsService } from './services/reviewsService';
 import { CardsController } from './controllers/cards';
 import { TabsController } from './controllers/tabs';
 import { SearchController } from './controllers/search'
 import { ResultsController } from './controllers/results'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { 
   MatInputModule, 
   MatButtonModule, 
@@ -20,12 +20,16 @@ import {
 
 @NgModule({
   declarations: [
-    ReviewsService, TabsController, CardsController, SearchController, ResultsController
+    ReviewsService, 
+    TabsController, 
+    CardsController, 
+    SearchController, 
+    ResultsController,
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
-    HttpModule,
     BrowserAnimationsModule,
     MatCardModule,
     MatGridListModule,
@@ -33,7 +37,7 @@ import {
     MatIconModule,
     MatButtonModule
   ],
-  providers: [ReviewsService],
+  providers: [ReviewsService, HttpClientModule],
   bootstrap: [SearchController, ResultsController, TabsController]
 })
 export class AppModule { }
