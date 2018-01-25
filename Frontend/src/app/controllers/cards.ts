@@ -20,8 +20,6 @@ export class CardsController {
     else if (this.kind == CardKind.patchy) this.reviews = this.reviewsService.patchy_reviews;
     else if (this.kind == CardKind.bad) this.reviews = this.reviewsService.bad_reviews;
     else if (this.kind == CardKind.crap) this.reviews = this.reviewsService.crap_reviews;
-
-    console.log(this.reviews.length == 0);
   }
 }
 

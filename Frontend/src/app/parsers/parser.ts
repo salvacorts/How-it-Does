@@ -4,15 +4,13 @@ export class Parser {
    private url: string;
 
    constructor(provider: string, protected http: HttpClient) {
-      this.url = `https://api.website.com/${provider}/`;
+      this.url = `http://127.0.0.1:8080/${provider}/`;
    }
 
    // REF: https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
    // REF: https://www.w3schools.com/jsref/jsref_replace.asp
    public async RetrieveReviews(pattern: string) {
       pattern = pattern.replace(/ /g, "+");
-
-      console.log(this.url + pattern);
 
       return await this.http.get<Review[]>(this.url + pattern).toPromise();
    }
@@ -21,9 +19,9 @@ export class Parser {
 
 // REF: https://medium.com/codingthesmartway-com-blog/angular-4-3-httpclient-accessing-rest-web-services-with-angular-2305b8fd654b
 export interface Review {
-   origin: string;
-   author: string;
-   avatar: string;
-   rating: number;
-   text: string;
+   Origin: string;
+   Author: string;
+   Avatar: string;
+   Rating: number;
+   Text: string;
 }

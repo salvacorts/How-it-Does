@@ -24,6 +24,11 @@ export class ReviewsService {
    }
 
    public Search(item: string) {
+      this.great_reviews.length = 0;
+      this.good_reviews.length = 0;
+      this.patchy_reviews.length = 0;
+      this.bad_reviews.length = 0;
+      this.crap_reviews.length = 0;
       this.current_item = item;
       
       // REF: https://codecraft.tv/courses/angular/http/http-with-promises/
@@ -38,7 +43,7 @@ export class ReviewsService {
       var rating_sum = 0;
 
       for (let review of reviews) {
-         const rating = review.rating;
+         const rating = review.Rating;
 
          rating_sum += rating;
 
