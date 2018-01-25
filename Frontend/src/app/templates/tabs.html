@@ -2,35 +2,35 @@
    <mat-tab>
       <ng-template mat-tab-label>
          Great
-         <img src="/assets/images/great.png" class="tab-icon" hspace="10">
+         <img src="/assets/images/emoji/great.png" class="tab-icon" hspace="10">
       </ng-template>
       <cards [kind]="cardKind.great"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Good
-         <img src="/assets/images/good.png" class="tab-icon" hspace="10">
+         <img src="/assets/images/emoji/good.png" class="tab-icon" hspace="10">
       </ng-template>
       <cards [kind]="cardKind.good"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Patchy
-         <img src="/assets/images/ok.png" class="tab-icon" hspace="10">
+         <img src="/assets/images/emoji/patchy.png" class="tab-icon" hspace="10">
       </ng-template>
       <cards [kind]="cardKind.patchy"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Bad
-         <img src="/assets/images/bad.png" class="tab-icon" hspace="10">
+         <img src="/assets/images/emoji/bad.png" class="tab-icon" hspace="10">
       </ng-template>
       <cards [kind]="cardKind.bad"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Crap
-         <img src="/assets/images/crap.png" class="tab-icon" hspace="10">
+         <img src="/assets/images/emoji/crap.png" class="tab-icon" hspace="10">
       </ng-template>
       <cards [kind]="cardKind.crap"></cards>
    </mat-tab>

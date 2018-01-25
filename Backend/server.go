@@ -23,7 +23,7 @@ func CallParser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var revs []reviews.Review
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		review := reviews.Review{
 			Rating: rand.Float32() * 5,
 			Origin: params["provider"],
