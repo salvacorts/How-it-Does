@@ -1,7 +1,14 @@
 package parsers
 
-import "../reviews"
+import (
+	"../reviews"
+)
 
-type Parser interface {
-	GetReviews(pattern string) []reviews.Review
+func GetAvailibleParsers() map[string]func(string) []reviews.Review {
+	return map[string]func(string) []reviews.Review{
+		"amazon":   GetAmazonReviews,
+		"ebay":     GetEbayReviews,
+		"bestbuy":  GetBestbuyReviews,
+		"gearbest": GetGearbestReviews,
+	}
 }

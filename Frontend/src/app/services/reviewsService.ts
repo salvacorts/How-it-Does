@@ -1,6 +1,6 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Parser, Review } from '../parsers/parser'
+import { Parser, Review, GetAvailibleParsers } from '../parsers/parser'
 export { Review } from '../parsers/parser';
 
 
@@ -17,10 +17,16 @@ export class ReviewsService {
    private parsers: Array<Parser> = [];
 
    constructor(@Inject(HttpClient) http: HttpClient) {
-      this.parsers.push(new Parser("bestbuy", http));
-      this.parsers.push(new Parser("amazon", http));
-      this.parsers.push(new Parser("ebay", http));
-      // TODO: Add new parsers here
+      // Automatically get availible parsers from API and add them to parsers array
+      GetAvailibleParsers(http).then(
+         parsers => {
+            for (let parser of parsers) {
+               this.parsers.push(new Parser(parser, http));
+            }
+         }
+      )
+
+      // NOTE: Add new parsers here
    }
 
    public Search(item: string) {
@@ -33,9 +39,11 @@ export class ReviewsService {
       
       // REF: https://codecraft.tv/courses/angular/http/http-with-promises/
       for (let parser of this.parsers) {
-         parser.RetrieveReviews(item).then( reviews => {
-            this.ClassifyReviews(reviews);
-         });
+         parser.RetrieveReviews(item).then(
+            reviews => {
+               this.ClassifyReviews(reviews);
+            }
+         );
       }
    }
    

@@ -3,37 +3,41 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"math/rand"
 	"net/http"
 	"strings"
 
-	"./reviews"
+	"./parsers"
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/{provider}/{item}", CallParser).Methods("GET")
+	router.HandleFunc("/availible", GetParsers).Methods("GET")
 
 	http.ListenAndServe("0.0.0.0:8080", router)
 }
 
+func GetParsers(w http.ResponseWriter, r *http.Request) {
+	var identifiers []string
+
+	availibleParsers := parsers.GetAvailibleParsers()
+	for key, _ := range availibleParsers {
+		identifiers = append(identifiers, key)
+	}
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	json.NewEncoder(w).Encode(identifiers)
+}
+
 func CallParser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	var revs []reviews.Review
+	provider := strings.ToLower(params["provider"])
+	item := strings.Replace(params["item"], " ", "+", -1)
 
-	for i := 0; i < 100; i++ {
-		review := reviews.Review{
-			Rating: rand.Float32() * 5,
-			Origin: params["provider"],
-			Author: "Tester",
-			Avatar: fmt.Sprintf("https://www.gravatar.com/avatar/%d?d=identicon", rand.Intn(10000)),
-			Text:   fmt.Sprintf("Thats what I think about %s", strings.Replace(params["item"], "+", " ", -1)),
-		}
+	availibleParsers := parsers.GetAvailibleParsers()
 
-		revs = append(revs, review)
-	}
+	revs := availibleParsers[provider](item)
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(revs)

@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 
+const apiURL = "http://127.0.0.1:8080";
+
 export class Parser {
    private url: string;
 
    constructor(provider: string, protected http: HttpClient) {
-      this.url = `http://127.0.0.1:8080/${provider}/`;
+      this.url = `${apiURL}/${provider}/`;
    }
 
    // REF: https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
@@ -16,6 +18,9 @@ export class Parser {
    }
 }
 
+export async function GetAvailibleParsers(http: HttpClient) {
+   return await http.get<string[]>(apiURL + "/availible").toPromise();
+}
 
 // REF: https://medium.com/codingthesmartway-com-blog/angular-4-3-httpclient-accessing-rest-web-services-with-angular-2305b8fd654b
 export interface Review {
