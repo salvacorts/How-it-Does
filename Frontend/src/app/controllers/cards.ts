@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ReviewsService, Review } from '../services/reviewsService';
+import { ReviewsService, Review, CardKind } from '../services/reviewsService';
 
 @Component({
   selector: 'cards',
@@ -15,18 +15,7 @@ export class CardsController {
   constructor(private reviewsService: ReviewsService) {}
 
   ngOnInit() {
-    if (this.kind == CardKind.great) this.reviews = this.reviewsService.great_reviews;
-    else if (this.kind == CardKind.good) this.reviews = this.reviewsService.good_reviews;
-    else if (this.kind == CardKind.patchy) this.reviews = this.reviewsService.patchy_reviews;
-    else if (this.kind == CardKind.bad) this.reviews = this.reviewsService.bad_reviews;
-    else if (this.kind == CardKind.crap) this.reviews = this.reviewsService.crap_reviews;
+    this.reviews = this.reviewsService.classified_reviews.get(this.kind);
+    console.log(this.reviews)
   }
-}
-
-export enum CardKind {
-  great = "great", 
-  good = "good",
-  patchy = "patchy",
-  bad = "bad",
-  crap = "crap"
 }

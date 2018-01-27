@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { CardKind } from './cards';
-import { ReviewsService } from '../services/reviewsService';
+import { ReviewsService, CardKind } from '../services/reviewsService';
 
 @Component({
    selector: 'tabs',

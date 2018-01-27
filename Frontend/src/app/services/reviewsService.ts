@@ -6,13 +6,15 @@ export { Review } from '../parsers/parser';
 
 @Injectable() // Singleton
 export class ReviewsService {
-   public great_reviews: Array<Review> = [];
-   public good_reviews: Array<Review> = [];
-   public patchy_reviews: Array<Review> = [];
-   public bad_reviews: Array<Review> = [];
-   public crap_reviews: Array<Review> = [];
    public average_rating: number;
    public current_item: string;
+   public classified_reviews: Map<CardKind, Array<Review>> = new Map([
+      [CardKind.great, new Array<Review>()],
+      [CardKind.good, new Array<Review>()],
+      [CardKind.patchy, new Array<Review>()],
+      [CardKind.bad, new Array<Review>()],
+      [CardKind.crap, new Array<Review>()]
+   ]);
 
    private parsers: Array<Parser> = [];
 
@@ -30,12 +32,10 @@ export class ReviewsService {
    }
 
    public Search(item: string) {
-      this.great_reviews.length = 0;
-      this.good_reviews.length = 0;
-      this.patchy_reviews.length = 0;
-      this.bad_reviews.length = 0;
-      this.crap_reviews.length = 0;
-      this.current_item = item;
+      this.classified_reviews.forEach((reviews: Array<Review>) => {
+         reviews.length = 0
+      })
+
       
       // REF: https://codecraft.tv/courses/angular/http/http-with-promises/
       for (let parser of this.parsers) {
@@ -52,16 +52,27 @@ export class ReviewsService {
 
       for (let review of reviews) {
          const rating = review.Rating;
+         var category: CardKind;
 
          rating_sum += rating;
 
-         if (rating >= 4.5) this.great_reviews.push(review);
-         else if (rating < 4.5 && rating >= 4) this.good_reviews.push(review);
-         else if (rating < 4 && rating >= 3) this.patchy_reviews.push(review);
-         else if (rating < 3 && rating >= 1) this.bad_reviews.push(review);
-         else this.bad_reviews.push(review);
+         if (rating >= 4.5) category = CardKind.great;
+         else if (rating < 4.5 && rating >= 4) category = CardKind.good;
+         else if (rating < 4 && rating >= 3) category = CardKind.patchy;
+         else if (rating < 3 && rating >= 1) category = CardKind.bad;
+         else category = CardKind.crap;
+
+         this.classified_reviews.get(category).push(review)
       }
 
       this.average_rating = rating_sum / reviews.length;
    }
+}
+
+export enum CardKind {
+   great = "great",
+   good = "good",
+   patchy = "patchy",
+   bad = "bad",
+   crap = "crap"
 }
