@@ -2,13 +2,17 @@ package parsers
 
 import (
 	"../reviews"
+	"./amazon"
+	"./bestbuy"
+	"./ebay"
+	"./gearbest"
 )
 
 func GetAvailibleParsers() map[string]func(string) []reviews.Review {
 	return map[string]func(string) []reviews.Review{
-		"amazon":   GetAmazonReviews,
-		"ebay":     GetEbayReviews,
-		"bestbuy":  GetBestbuyReviews,
-		"gearbest": GetGearbestReviews,
+		"amazon":   amazon.GetReviews,
+		"ebay":     ebay.GetReviews,
+		"bestbuy":  bestbuy.GetReviews,
+		"gearbest": gearbest.GetReviews,
 	}
 }
