@@ -20,3 +20,53 @@
 .tab-icon {
    width: 20%;
 }
+
+.tags-container {
+    padding-bottom: 0.5em;
+}
+
+.mat-expansion-panel {
+    background-color: transparent;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: none;
+}
+
+.mat-expansion-panel-header-description {
+    flex-grow: inherit;
+}
+
+.mat-expansion-panel:not(.mat-expanded)  
+.mat-expansion-panel-header:not([aria-disabled='true']):hover {
+    background-color: transparent;
+}
+
+.mat-chip {
+    margin: 0.5em 0.5em 0.5em 0.5em !important; 
+}
+
+.mat-great {
+    background-color: #2196F3;
+    color: white;
+}
+
+.mat-good {
+    background-color: #009688;
+    color: white;
+}
+
+.mat-patchy {
+    background-color: #FFC107;
+    color: white;
+}
+
+.mat-bad {
+    background-color: #795548;
+    color: white;
+}
+
+.mat-crap {
+    background-color: #F44336;
+    color: white;
+}

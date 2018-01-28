@@ -9,6 +9,11 @@
    justify-content: center;
 }
 
+.mat-progress-bar {
+    height: 2px;
+    width: 100%;
+}
+
 input[type=text] {
    float: left;
    width: 85%;

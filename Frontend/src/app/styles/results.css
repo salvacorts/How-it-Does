@@ -1,3 +1,8 @@
+:host {
+   width: 100%;
+   text-align: center;
+}
+
 .content {
    padding-top: 1.2em;
    color: #212121;
@@ -10,4 +15,27 @@
 .instructions {
    padding-top: 3em;
    height: 20em;
+}
+
+.overall-opinion {
+   justify-content: center;
+}
+
+.overall-opinion h2 {
+   display: inline-block;
+   vertical-align: middle;
+}
+
+.overall-opinion img {
+   vertical-align: middle;
+   margin-right: 4px;
+   margin-left: 3%;
+   height: 2em;
+}
+
+.overall-opinion p {
+   display: inline-block;
+   vertical-align: sub;
+   font-size: 0.9em;
+   opacity: 0.9;
 }

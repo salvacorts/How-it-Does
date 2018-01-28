@@ -1,5 +1,13 @@
 <div class="content" *ngIf="reviewsService.current_item">
-   <h2>{{reviewsService.current_item}} is {{reviewsService.average_rating}}</h2>
+   <div class="overall-opinion">
+      <h2>{{reviewsService.current_item}}</h2>
+      <img 
+         src="/assets/images/emoji/{{reviewsService.GetCategoryFromRating()}}.png"
+          title="Average rating: {{reviewsService.average_rating}}"
+         class="tab-icon" 
+         hspace="10"/>
+      <p>It's {{reviewsService.GetCategoryFromRating()}}</p>
+   </div>
    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
    <script>
       (adsbygoogle = window.adsbygoogle || []).push({

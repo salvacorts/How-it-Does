@@ -16,6 +16,5 @@ export class CardsController {
 
   ngOnInit() {
     this.reviews = this.reviewsService.classified_reviews.get(this.kind);
-    console.log(this.reviews)
   }
 }

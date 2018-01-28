@@ -5,8 +5,14 @@
 @include mat-core();
 
 $primary: mat-palette($mat-deep-orange, 500);
-$accent:  mat-palette($mat-lime, 500, A200, A400);
+$accent:  mat-palette($mat-blue, 500, A200, A400);
 $warn:    mat-palette($mat-red, 500);
+
+$great: mat-palette($mat-cyan);
+$good: mat-palette($mat-teal);
+$patchy: mat-palette($mat-amber);
+$bad: mat-palette($mat-brown);
+$crap: mat-palette($mat-red);
 
 $theme: mat-light-theme($primary, $accent, $warn);
 

@@ -6,4 +6,10 @@ type Review struct {
 	Author string
 	Avatar string
 	Text   string
+	Tags   []Tag
+}
+
+type Tag struct {
+	Value string
+	Score float32
 }

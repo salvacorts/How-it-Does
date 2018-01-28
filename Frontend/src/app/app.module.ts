@@ -15,7 +15,10 @@ import {
   MatIconModule,
   MatCardModule,
   MatGridListModule,
-  MatTabsModule
+  MatTabsModule,
+  MatProgressBarModule,
+  MatExpansionModule,
+  MatChipsModule
  } from '@angular/material';
 
 @NgModule({
@@ -35,6 +38,9 @@ import {
     MatTabsModule,
     MatIconModule,
     MatButtonModule,
+    MatProgressBarModule,
+    MatExpansionModule,
+    MatChipsModule
   ],
   providers: [ReviewsService, HttpClientModule],
   bootstrap: [SearchController, ResultsController, TabsController]

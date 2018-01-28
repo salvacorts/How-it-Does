@@ -2,3 +2,7 @@
    <input #input type="text" name="search" placeholder="Search...">
    <button class="search-button" mat-raised-button color="primary" (click)="Search(input.value)">Search</button>
 </div>
+<mat-progress-bar 
+   mode="query" 
+   *ngIf="reviewsService.searching && reviewsService.current_item">
+</mat-progress-bar>
