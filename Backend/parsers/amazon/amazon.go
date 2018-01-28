@@ -11,7 +11,7 @@ import (
 func GetReviews(pattern string) []reviews.Review {
 	var revs []reviews.Review
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 20; i++ {
 		review := reviews.Review{
 			Rating: rand.Float32() + 4,
 			Origin: "amazon",

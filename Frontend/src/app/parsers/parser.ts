@@ -33,6 +33,6 @@ export interface Review {
 }
 
 export interface Tag {
-   value: string;
-   score: number;
+   Value: string;
+   Score: number;
 }

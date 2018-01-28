@@ -1,6 +1,6 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Parser, Review, GetAvailibleParsers } from '../parsers/parser'
+import { Parser, Review, GetAvailibleParsers, Tag } from '../parsers/parser'
 export { Review } from '../parsers/parser';
 
 
@@ -10,6 +10,7 @@ export class ReviewsService {
    public current_item: string;
    public searching: boolean = false;
    public processed_parsers: number;
+   public classified_tags = new Map <Tag, Map<CardKind, Array<Review>>>();
    public classified_reviews: Map<CardKind, Array<Review>> = new Map([
       [CardKind.great, new Array<Review>()],
       [CardKind.good, new Array<Review>()],
@@ -46,7 +47,13 @@ export class ReviewsService {
          reviews.length = 0
       })
 
-      
+      // Clear all tags
+      this.classified_tags.forEach((value) => {
+         value.forEach((array) => {
+            array.length = 0;
+         })
+      }) 
+
       // Retrieve reviews from API
       // REF: https://codecraft.tv/courses/angular/http/http-with-promises/
       for (let parser of this.parsers) {
@@ -67,6 +74,42 @@ export class ReviewsService {
          const category = this.GetCategoryFromRating(review.Rating)
          this.classified_reviews.get(category).push(review)
          rating_sum += review.Rating;
+
+         // TODO: Classify Tags. Data sctucture might be like so:
+         //    - Map:
+         //       - Key: Tag including score which will be the average
+         //       - Value: array of "pointers" to this review.
+         //          Note that in typescript non-primitive objects
+         //          are passed by reference
+         //
+         // For each review, go through its tags:
+         //    - If it exists on the map: Add the review to the array of this tag.
+         //    - If it doesnt: Add this tag to the map and add this review to this tag on the map
+         //
+
+         for (let tag of review.Tags) {
+            var added = false;
+
+            this.classified_tags.forEach(
+               (value, key) => {
+                  if (key.Value == tag.Value) {
+                     key.Score = (key.Score + review.Rating) / 2
+
+                     var array = value.get(category)
+                     if (!array) array = new Array<Review>()
+                     array.push(review)
+
+                     added = true
+                     // TODO: Add break here
+                  }
+               })
+
+            if (!added) {
+               this.classified_tags.set(tag, new Map<CardKind, Array<Review>>([
+                  [category, new Array<Review>(review)]
+               ]))
+            }
+         }
       }
 
       // calculate average rating

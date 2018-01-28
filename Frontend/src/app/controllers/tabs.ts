@@ -11,4 +11,8 @@ export class TabsController {
    public cardKind = CardKind; // Permite usar el enumerado para llamar a <cards> en el html
 
    constructor(private reviewsService: ReviewsService) {}
+
+   private ArrayFromTags() {
+      return Array.from(this.reviewsService.classified_tags.keys())
+   }
 }
