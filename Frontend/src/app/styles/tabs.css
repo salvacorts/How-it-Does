@@ -42,6 +42,10 @@
     background-color: transparent;
 }
 
+.tags-instructions {
+    margin-bottom: 0.5em;
+}
+
 .mat-chip {
     margin: 0.5em 0.5em 0.5em 0.5em !important; 
 }
@@ -69,4 +73,12 @@
 .mat-crap {
     background-color: #F44336;
     color: white;
+}
+
+.mat-about {
+    color: #673AB7;
+}
+
+.mat-dialog-actions {
+    justify-content: flex-end;
 }

@@ -8,6 +8,7 @@
             Click to toggle
          </mat-panel-description>
       </mat-expansion-panel-header>
+      <button mat-button color="about" (click)="OpenTagsDialog()">What is it</button>
       <mat-chip-list>
          <mat-chip 
             *ngFor="let tag of ArrayFromTags()"

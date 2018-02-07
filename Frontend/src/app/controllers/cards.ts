@@ -7,14 +7,13 @@ import { ReviewsService, Review, CardKind } from '../services/reviewsService';
   styleUrls: ['../styles/cards.css'],
 })
 
-
 export class CardsController {
   @Input() public kind: CardKind;
   public reviews: Array<Review>;
 
-  constructor(private reviewsService: ReviewsService) {}
+  constructor(public reviewsService: ReviewsService) {}
 
   ngOnInit() {
-    this.reviews = this.reviewsService.classified_reviews.get(this.kind);
+    this.reviews = this.reviewsService.classified_reviews.get(this.kind);   
   }
 }

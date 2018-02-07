@@ -21,7 +21,7 @@ func GetReviews(pattern string) []reviews.Review {
 			Tags: []reviews.Tag{
 				{"keyboard", 0.3},
 				{"mouse", -0.7},
-				{"screen", 1000000},
+				{"screen", 1.0},
 			},
 		}
 

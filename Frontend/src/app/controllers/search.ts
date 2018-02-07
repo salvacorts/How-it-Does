@@ -9,9 +9,9 @@ import { ReviewsService } from '../services/reviewsService';
 })
 
 export class SearchController {
-   constructor(private reviewsService: ReviewsService) {}
+   constructor(public reviewsService: ReviewsService) {}
 
-   Search(inputValue: string) {
+   public Search(inputValue: string) {
       this.reviewsService.Search(inputValue)
    }
 }

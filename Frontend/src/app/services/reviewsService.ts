@@ -86,7 +86,6 @@ export class ReviewsService {
          //    - If it exists on the map: Add the review to the array of this tag.
          //    - If it doesnt: Add this tag to the map and add this review to this tag on the map
          //
-
          for (let tag of review.Tags) {
             var added = false;
 

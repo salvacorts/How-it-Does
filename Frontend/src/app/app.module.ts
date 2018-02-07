@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ReviewsService } from './services/reviewsService';
 import { CardsController } from './controllers/cards';
-import { TabsController } from './controllers/tabs';
+import { TabsController, TagsDialog } from './controllers/tabs';
 import { SearchController } from './controllers/search'
 import { ResultsController } from './controllers/results'
 import { 
@@ -18,7 +18,8 @@ import {
   MatTabsModule,
   MatProgressBarModule,
   MatExpansionModule,
-  MatChipsModule
+  MatChipsModule,
+  MatDialogModule
  } from '@angular/material';
 
 @NgModule({
@@ -27,6 +28,7 @@ import {
     CardsController, 
     SearchController, 
     ResultsController,
+    TagsDialog
   ],
   imports: [
     BrowserModule,
@@ -40,9 +42,11 @@ import {
     MatButtonModule,
     MatProgressBarModule,
     MatExpansionModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule,
   ],
   providers: [ReviewsService, HttpClientModule],
-  bootstrap: [SearchController, ResultsController, TabsController]
+  bootstrap: [SearchController, ResultsController, TabsController],
+  entryComponents: [TagsDialog]
 })
 export class AppModule { }

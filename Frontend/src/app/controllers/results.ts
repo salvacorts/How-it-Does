@@ -9,5 +9,5 @@ import { ReviewsService, Review } from '../services/reviewsService';
 
 
 export class ResultsController {
-   constructor(private reviewsService: ReviewsService) {}
+   constructor(public reviewsService: ReviewsService) {}
 }
