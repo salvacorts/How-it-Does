@@ -30,6 +30,8 @@ export interface Review {
    Rating: number;
    Text: string;
    Tags: Tag[];
+   Expanded: boolean;
+   Expansible: boolean | undefined;
 }
 
 export interface Tag {

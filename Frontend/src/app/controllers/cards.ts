@@ -16,4 +16,19 @@ export class CardsController {
   ngOnInit() {
     this.reviews = this.reviewsService.classified_reviews.get(this.kind);   
   }
+
+  public Overflow(element: HTMLDivElement, review: Review): boolean {
+    // If its still not rendered on DOM
+    if (element.clientHeight == 0) return false
+    
+    if (review.Expansible == undefined) {
+      review.Expansible = element.clientHeight < element.scrollHeight
+    }
+    
+    return review.Expansible
+  }
+
+  public FormatText(text: string): string[] {
+    return text.split("\n")
+  }
 }

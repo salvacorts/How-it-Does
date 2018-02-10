@@ -74,6 +74,7 @@ export class ReviewsService {
          const category = this.GetCategoryFromRating(review.Rating)
          this.classified_reviews.get(category).push(review)
          rating_sum += review.Rating;
+         review.Expanded = false;
 
          // TODO: Classify Tags. Data sctucture might be like so:
          //    - Map:

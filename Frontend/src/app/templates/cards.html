@@ -6,9 +6,16 @@
         <mat-card-title>{{review.Author}}</mat-card-title>
         <mat-card-subtitle>{{review.Origin}}</mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content>
-        {{review.Text}}        
+      <mat-card-content #content
+          [style.max-height]="review.Expanded ? 'fit-content' : '6em'">
+          <pre>{{review.Text}}</pre>
       </mat-card-content>
+      <div class="expand-button" *ngIf="Overflow(content, review)">
+        <button mat-icon-button (click)="review.Expanded = !review.Expanded">
+          <mat-icon aria-label="Collapse" *ngIf="review.Expanded">keyboard_arrow_up</mat-icon>
+          <mat-icon aria-label="Expand" *ngIf="!review.Expanded">keyboard_arrow_down</mat-icon>
+        </button>
+      </div>
     </mat-card>
   </div>
 </div>
