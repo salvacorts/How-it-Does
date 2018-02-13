@@ -50,25 +50,52 @@ mat-card {
 
 /* Create grid */
 .grid-container {
-  display: flex;
+  /* display: grid;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-content: stretch;
-  align-items: center;
+  align-items: center; */
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  grid-column-gap: 2em;
+  grid-row-gap: 3em;
+
   padding-bottom: 2em;
   padding-right: 3em;
   padding-left: 3em;
 }
 
 .grid-item {
-  flex: 1;
+  /* flex: 1;
   align-self: center;
   flex-grow: 2;
   flex-shrink: 3;
-  flex-basis: auto;
-  max-width: 40%;
+  flex-basis: auto; */
+
+  /* max-width: 40%; */
   padding: 12px 12px 12px 12px;
+}
+
+/* TODO: Add HDPI support */
+@media only screen and (min-width: 800px) {
+  .grid-container {
+    grid-template-columns: 1fr 1fr;
+  }  
+}
+
+@media only screen and (min-width: 1400px) {
+  .grid-container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }  
+}
+
+@media only screen and (min-width: 1920px) {
+  .grid-container {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }  
 }
 
 .empty-container {
