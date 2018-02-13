@@ -7,7 +7,7 @@ import { ReviewsService, Review } from '../services/reviewsService';
    styleUrls: ['../styles/results.css'],
 })
 
-
+/** Results view controller */
 export class ResultsController {
    constructor(public reviewsService: ReviewsService) {}
 }

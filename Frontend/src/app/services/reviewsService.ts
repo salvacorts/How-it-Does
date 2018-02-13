@@ -1,16 +1,21 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Parser, Review, GetAvailibleParsers, Tag } from '../parsers/parser'
+
 export { Review } from '../parsers/parser';
 
-
+/** Service to interact with reviews */
 @Injectable() // Singleton
 export class ReviewsService {
+   /** Average rating for `current_item` */
    public average_rating: number;
+   /** Current searched item */
    public current_item: string;
+   /** Indicates if this is still searching */
    public searching: boolean = false;
-   public processed_parsers: number;
+   /** Reviews classified by its category and tags */
    public classified_tags = new Map <Tag, Map<CardKind, Array<Review>>>();
+   /** Reviews classified by its category */
    public classified_reviews: Map<CardKind, Array<Review>> = new Map([
       [CardKind.great, new Array<Review>()],
       [CardKind.good, new Array<Review>()],
@@ -18,7 +23,10 @@ export class ReviewsService {
       [CardKind.bad, new Array<Review>()],
       [CardKind.crap, new Array<Review>()]
    ]);
-
+   
+   /** Number of already processed_parsers */
+   private processed_parsers: number;
+   /** Availible parsers to retrieve reviews from */
    private parsers: Array<Parser> = [];
 
    constructor(@Inject(HttpClient) http: HttpClient) {
@@ -34,6 +42,12 @@ export class ReviewsService {
       // NOTE: Add custom parsers here
    }
 
+   /**
+    * It will retrieve reviews for `item` by using the API.
+    * For each review, it will classify it.
+    * @see https://codecraft.tv/courses/angular/http/http-with-promises/
+    * @param item    Item to search for.
+    */
    public Search(item: string) {
       this.current_item = item;
       this.average_rating = 0;
@@ -54,8 +68,7 @@ export class ReviewsService {
          })
       }) 
 
-      // Retrieve reviews from API
-      // REF: https://codecraft.tv/courses/angular/http/http-with-promises/
+      // Retrieve reviews from API for each availible parser
       for (let parser of this.parsers) {
          parser.RetrieveReviews(item).then(
             reviews => {
@@ -67,6 +80,10 @@ export class ReviewsService {
       }
    }
    
+   /**
+    * This function will classify each review of reviews by it kind and its tags.
+    * @param reviews Array of reviews to classify
+    */
    private async ClassifyReviews(reviews: Review[]) {
       var rating_sum = 0;
 
@@ -76,20 +93,18 @@ export class ReviewsService {
          rating_sum += review.Rating;
          review.Expanded = false;
 
-         // TODO: Classify Tags. Data sctucture might be like so:
+         // Classify Tags. Data sctucture like:
          //    - Map:
          //       - Key: Tag including score which will be the average
-         //       - Value: array of "pointers" to this review.
-         //          Note that in typescript non-primitive objects
-         //          are passed by reference
-         //
-         // For each review, go through its tags:
-         //    - If it exists on the map: Add the review to the array of this tag.
-         //    - If it doesnt: Add this tag to the map and add this review to this tag on the map
-         //
+         //       - Value: Map of:
+         //          - Key: Category as CardKind
+         //          - Value: Array of pointers to reviews
          for (let tag of review.Tags) {
             var added = false;
 
+            // For each value, key pair, if tag equals to the key,
+            // update its score and add this review to the array that
+            // match to the category of this review.
             this.classified_tags.forEach(
                (value, key) => {
                   if (key.Value == tag.Value) {
@@ -104,6 +119,7 @@ export class ReviewsService {
                   }
                })
 
+            // If tag didnt exists on classified_tags, then create it and add the review to it.
             if (!added) {
                this.classified_tags.set(tag, new Map<CardKind, Array<Review>>([
                   [category, new Array<Review>(review)]
@@ -118,7 +134,18 @@ export class ReviewsService {
       this.average_rating = (this.average_rating + average) / 2;
    }
 
-   public GetCategoryFromRating(rating: number = this.average_rating) {
+   /**
+    * Get category by its rating:
+    *    [5, 4.5] = Great
+    *    (4.5, 4] = Good
+    *     (4, 3]  = Patchy
+    *     (3, 1]  = Bad
+    *     (1, 0]  = Crap 
+    * @param rating 
+    * 
+    * @returns category corresponding to rating
+    */
+   public GetCategoryFromRating(rating: number = this.average_rating): CardKind {
       var category: CardKind;
 
       // Get the category based on review rating

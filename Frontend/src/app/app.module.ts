@@ -32,9 +32,9 @@ import {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    BrowserAnimationsModule,
     MatCardModule,
     MatGridListModule,
     MatTabsModule,

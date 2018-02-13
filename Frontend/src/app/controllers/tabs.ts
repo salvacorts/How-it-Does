@@ -8,18 +8,26 @@ import { ReviewsService, CardKind } from '../services/reviewsService';
    styleUrls: ['../styles/tabs.css'],
 })
 
+/** Controller for Tabs view */
 export class TabsController {
-   public cardKind = CardKind; // Permite usar el enumerado para llamar a <cards> en el html
+   /** Allows to use CardKind objects on the view */
+   public cardKind = CardKind;
 
    constructor(public reviewsService: ReviewsService, public dialog: MatDialog) {}
 
+   /** 
+    * Get array of tags keys to iterate over them 
+    * 
+    * @returns Array of Tags
+    */
    public ArrayFromTags() {
       return Array.from(this.reviewsService.classified_tags.keys())
    }
 
+   /** Open dialog about Tags instructions */
    public OpenTagsDialog() {
       let dialogRef = this.dialog.open(TagsDialog, {
-         width: "400px",
+         width: "450px",
          data: {}
       });
    }
