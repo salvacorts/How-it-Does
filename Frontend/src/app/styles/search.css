@@ -16,7 +16,7 @@
 
 input[type=text] {
    float: left;
-   width: 75%;
+   width: 80%;
    height: 100%;
    box-sizing: border-box;
    padding-left: 10px;
@@ -34,8 +34,9 @@ input[type=text]:focus {
 }
 
 .search-button {
-   float: left;
-   width: 15%;
-   height: 100%;
-   line-height: 100%;
+    float: left;
+    min-width: inherit; 
+    width: 20%;
+    height: inherit;
+    line-height: 100%;
 }

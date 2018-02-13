@@ -50,13 +50,6 @@ mat-card {
 
 /* Create grid */
 .grid-container {
-  /* display: grid;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: stretch;
-  align-items: center; */
-
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
@@ -64,19 +57,13 @@ mat-card {
   grid-row-gap: 3em;
 
   padding-bottom: 2em;
-  padding-right: 3em;
-  padding-left: 3em;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+  padding-top: 2em;
 }
 
 .grid-item {
-  /* flex: 1;
   align-self: center;
-  flex-grow: 2;
-  flex-shrink: 3;
-  flex-basis: auto; */
-
-  /* max-width: 40%; */
-  padding: 12px 12px 12px 12px;
 }
 
 /* TODO: Add HDPI support */

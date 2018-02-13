@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ReviewsService, CardKind } from '../services/reviewsService';
 
 @Component({
@@ -12,6 +11,7 @@ import { ReviewsService, CardKind } from '../services/reviewsService';
 export class TabsController {
    /** Allows to use CardKind objects on the view */
    public cardKind = CardKind;
+   public currentTabIndex = 0;
 
    constructor(public reviewsService: ReviewsService, public dialog: MatDialog) {}
 
