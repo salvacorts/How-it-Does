@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { ReviewsService, CardKind } from '../services/reviewsService';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
    selector: 'tabs',
