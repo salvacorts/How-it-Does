@@ -1,29 +1,39 @@
 package amazon
 
 import (
+	"encoding/xml"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math/rand"
+	"net/http"
+	"os"
+	"strings"
+	"time"
 
 	"../../reviews"
 )
 
-func GetReviews(pattern string) []reviews.Review {
+type Query struct {
+	XMLName xml.Name `xml:"urlset"`
+	ASIN    string   `xml:"url>ASIN"`
+}
+
+func SearchReviews(asin string) []reviews.Review {
+	const webURL = "www.amazon.com"
 	var revs []reviews.Review
 
 	for i := 0; i < 20; i++ {
 		review := reviews.Review{
-			Rating: rand.Float32() + 4,
-			Origin: "amazon",
+			Rating: rand.Float32() * 5,
+			Origin: "bestbuy",
 			Author: "Tester",
 			Avatar: fmt.Sprintf("https://www.gravatar.com/avatar/%d?d=identicon", rand.Intn(10000)),
-			Text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent convallis felis risus, non euismod elit lacinia faucibus. Vestibulum molestie vulputate mollis. Vivamus vitae nunc sem. Fusce eu accumsan arcu. Curabitur eleifend eget libero in egestas. Duis in vestibulum ipsum. Nunc placerat pulvinar nisi. Aliquam ante velit, eleifend et dolor ut, pulvinar finibus lorem. Donec et eros elit. Duis dictum augue interdum, blandit enim sed, rhoncus dolor. Vestibulum placerat massa at justo placerat finibus. Phasellus rutrum est sed sagittis placerat. Phasellus felis enim, vestibulum sit amet tempor et, aliquam ut sapien.
-
-Nam et blandit dui, ut tincidunt sapien. Donec mollis ante nisl, in molestie ipsum lobortis id. Curabitur purus turpis, consequat in diam vel, tincidunt accumsan sem. Aenean arcu magna, tempor id est nec, lobortis auctor leo. Vivamus elementum porta nibh, sit amet pulvinar ligula varius sed. Ut ac dolor id mauris pharetra pharetra. Quisque sed ante elementum, interdum nulla nec, pretium diam. Vivamus tellus diam, rhoncus a justo sed, finibus convallis ligula. Maecenas massa dui, gravida a ex ac, vestibulum dapibus eros. Etiam lacinia rutrum dictum. Vivamus malesuada vulputate nulla id ornare.
-
-Vestibulum bibendum, magna sagittis viverra iaculis, odio orci semper eros, non porta purus nulla in turpis. Nunc id ornare ipsum. Nullam ac interdum sapien. Ut congue lacus et quam mollis fringilla. Aenean mattis consectetur nisi vulputate ornare. Suspendisse elit velit, ullamcorper in elementum ut, placerat vitae mauris. Interdum et malesuada fames ac ante ipsum primis in faucibus.`,
+			Text:   fmt.Sprintf("Thats what I think about %s", strings.Replace(asin, "+", " ", -1)),
 			Tags: []reviews.Tag{
 				{"keyboard", 0.3},
 				{"mouse", -0.7},
+				{"screen", 1.0},
 			},
 		}
 
@@ -31,4 +41,68 @@ Vestibulum bibendum, magna sagittis viverra iaculis, odio orci semper eros, non 
 	}
 
 	return revs
+}
+
+func GetSignedURL(url string, path string, params map[string]string) string {
+	var formatedParams = ""
+
+	for param, value := range params {
+		formatedParams += param + "=" + value + "&"
+	}
+
+	// formatedParams[:len(formatedParams)-1] from [0] to [len()-1]. Used to avoid las &
+	var stringToSign = fmt.Sprintf("GET\n%s\n%s\n%s", url, path, formatedParams[:len(formatedParams)-1])
+	println(stringToSign + "\n")
+	var signature = "lalala"
+
+	return fmt.Sprintf("http://%s/%s?%sSignature=%s", url, path, formatedParams, signature)
+}
+
+func GetASINCode(item string) string {
+	const apiURL = "webservices.amazon.com"
+	const path = "onca/xml"
+
+	var timestamp = time.Now().UTC().Format("2006-01-02T15:04:05Z")
+	var awsAccessKeyID = os.Getenv("AWS_ACCESS_KEY_ID")
+	var associateID = os.Getenv("AWS_ASSOCIATE_ID")
+	var params = map[string]string{
+		"AWSAccessKeyId": awsAccessKeyID,
+		"AssociateTag":   associateID,
+		"Operation":      "ItemSearch",
+		"Keywords":       strings.Replace(item, " ", "%20", -1), // URL encode; " " is "%20"
+		"Timestamp":      timestamp,
+	}
+
+	url := GetSignedURL(apiURL, path, params)
+	println(url + "\n")
+
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var q Query
+	xml.Unmarshal(body, &q)
+
+	return q.ASIN
+}
+
+func GetReviews(pattern string) []reviews.Review {
+	var revs []reviews.Review
+	var asin string
+
+	asin = GetASINCode(pattern)
+	revs = SearchReviews(asin)
+
+	return revs
+}
+
+func main() {
+	GetReviews("drone")
 }
