@@ -4,7 +4,7 @@
       <mat-card-header>
         <img mat-card-avatar src="{{review.Avatar}}">
         <mat-card-title>{{review.Author}}</mat-card-title>
-        <mat-card-subtitle>{{review.Origin}}</mat-card-subtitle>
+        <mat-card-subtitle style="text-transform: capitalize;">{{review.Origin}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content #content
           [ngClass]="review.Expanded ? 'expanded' : 'collapsed'">

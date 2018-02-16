@@ -1,16 +1,18 @@
 package amazon
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
+	"../../logger"
 	"../../reviews"
 )
 
@@ -26,7 +28,7 @@ func SearchReviews(asin string) []reviews.Review {
 	for i := 0; i < 20; i++ {
 		review := reviews.Review{
 			Rating: rand.Float32() * 5,
-			Origin: "bestbuy",
+			Origin: "amazon",
 			Author: "Tester",
 			Avatar: fmt.Sprintf("https://www.gravatar.com/avatar/%d?d=identicon", rand.Intn(10000)),
 			Text:   fmt.Sprintf("Thats what I think about %s", strings.Replace(asin, "+", " ", -1)),
@@ -43,7 +45,9 @@ func SearchReviews(asin string) []reviews.Review {
 	return revs
 }
 
+// REF: https://docs.aws.amazon.com/AWSECommerceService/latest/DG/rest-signature.html
 func GetSignedURL(url string, path string, params map[string]string) string {
+	var hasher = sha256.New()
 	var formatedParams = ""
 
 	for param, value := range params {
@@ -51,9 +55,9 @@ func GetSignedURL(url string, path string, params map[string]string) string {
 	}
 
 	// formatedParams[:len(formatedParams)-1] from [0] to [len()-1]. Used to avoid las &
-	var stringToSign = fmt.Sprintf("GET\n%s\n%s\n%s", url, path, formatedParams[:len(formatedParams)-1])
-	println(stringToSign + "\n")
-	var signature = "lalala"
+	stringToSign := fmt.Sprintf("GET\n%s\n%s\n%s", url, path, formatedParams[:len(formatedParams)-1])
+	hasher.Write([]byte(stringToSign))
+	signature := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 
 	return fmt.Sprintf("http://%s/%s?%sSignature=%s", url, path, formatedParams, signature)
 }
@@ -61,6 +65,8 @@ func GetSignedURL(url string, path string, params map[string]string) string {
 func GetASINCode(item string) string {
 	const apiURL = "webservices.amazon.com"
 	const path = "onca/xml"
+
+	var resp *http.Response
 
 	var timestamp = time.Now().UTC().Format("2006-01-02T15:04:05Z")
 	var awsAccessKeyID = os.Getenv("AWS_ACCESS_KEY_ID")
@@ -74,17 +80,18 @@ func GetASINCode(item string) string {
 	}
 
 	url := GetSignedURL(apiURL, path, params)
-	println(url + "\n")
+	// println(url + "\n")
 
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalln(err)
+		logger.Error(err.Error())
 	}
+
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		logger.Error(err.Error())
 	}
 
 	var q Query
@@ -95,10 +102,10 @@ func GetASINCode(item string) string {
 
 func GetReviews(pattern string) []reviews.Review {
 	var revs []reviews.Review
-	var asin string
+	// var asin string
 
-	asin = GetASINCode(pattern)
-	revs = SearchReviews(asin)
+	// asin = GetASINCode(pattern)
+	revs = SearchReviews(pattern)
 
 	return revs
 }

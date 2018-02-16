@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"strings"
 
-	"./parsers"
 	"github.com/gorilla/mux"
+
+	"./logger"
+	"./parsers"
 )
 
 func main() {
@@ -15,14 +17,17 @@ func main() {
 	router.HandleFunc("/{provider}/{item}", CallParser).Methods("GET")
 	router.HandleFunc("/availible", GetParsers).Methods("GET")
 
-	http.ListenAndServe("0.0.0.0:8080", router)
+	err := http.ListenAndServe("0.0.0.0:8081", router)
+	if err != nil {
+		logger.Fatal("Cannot start server: %s", err.Error())
+	}
 }
 
 func GetParsers(w http.ResponseWriter, r *http.Request) {
 	var identifiers []string
 
 	availibleParsers := parsers.GetAvailibleParsers()
-	for key, _ := range availibleParsers {
+	for key := range availibleParsers {
 		identifiers = append(identifiers, key)
 	}
 
@@ -35,10 +40,16 @@ func CallParser(w http.ResponseWriter, r *http.Request) {
 	provider := strings.ToLower(params["provider"])
 	item := strings.Replace(params["item"], " ", "+", -1)
 
-	availibleParsers := parsers.GetAvailibleParsers()
+	parserFunction, ok := parsers.GetAvailibleParsers()[provider]
+	if !ok {
+		logger.Error("%s '%s' is not a valid provider", r.Host, provider)
+		return
+	}
 
-	revs := availibleParsers[provider](item)
+	logger.Print("%s Provider: %s\tItem: %s", r.Host, provider, item)
+
+	reviews := parserFunction(item)
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	json.NewEncoder(w).Encode(revs)
+	json.NewEncoder(w).Encode(reviews)
 }
