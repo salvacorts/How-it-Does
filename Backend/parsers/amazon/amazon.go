@@ -1,18 +1,11 @@
 package amazon
 
 import (
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
-	"net/http"
-	"os"
 	"strings"
-	"time"
 
-	"../../logger"
 	"../../reviews"
 )
 
@@ -45,69 +38,17 @@ func SearchReviews(asin string) []reviews.Review {
 	return revs
 }
 
-// REF: https://docs.aws.amazon.com/AWSECommerceService/latest/DG/rest-signature.html
-func GetSignedURL(url string, path string, params map[string]string) string {
-	var hasher = sha256.New()
-	var formatedParams = ""
-
-	for param, value := range params {
-		formatedParams += param + "=" + value + "&"
-	}
-
-	// formatedParams[:len(formatedParams)-1] from [0] to [len()-1]. Used to avoid las &
-	stringToSign := fmt.Sprintf("GET\n%s\n%s\n%s", url, path, formatedParams[:len(formatedParams)-1])
-	hasher.Write([]byte(stringToSign))
-	signature := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-
-	return fmt.Sprintf("http://%s/%s?%sSignature=%s", url, path, formatedParams, signature)
-}
-
-func GetASINCode(item string) string {
-	const apiURL = "webservices.amazon.com"
-	const path = "onca/xml"
-
-	var resp *http.Response
-
-	var timestamp = time.Now().UTC().Format("2006-01-02T15:04:05Z")
-	var awsAccessKeyID = os.Getenv("AWS_ACCESS_KEY_ID")
-	var associateID = os.Getenv("AWS_ASSOCIATE_ID")
-	var params = map[string]string{
-		"AWSAccessKeyId": awsAccessKeyID,
-		"AssociateTag":   associateID,
-		"Operation":      "ItemSearch",
-		"Keywords":       strings.Replace(item, " ", "%20", -1), // URL encode; " " is "%20"
-		"Timestamp":      timestamp,
-	}
-
-	url := GetSignedURL(apiURL, path, params)
-	// println(url + "\n")
-
-	resp, err := http.Get(url)
-	if err != nil {
-		logger.Error(err.Error())
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		logger.Error(err.Error())
-	}
-
-	var q Query
-	xml.Unmarshal(body, &q)
-
-	return q.ASIN
-}
-
-func GetReviews(pattern string) []reviews.Review {
+func GetReviews(pattern string) ([]reviews.Review, error) {
 	var revs []reviews.Review
-	// var asin string
 
-	// asin = GetASINCode(pattern)
-	revs = SearchReviews(pattern)
+	asin, err := GetASINCode(pattern)
+	if err != nil {
+		return nil, err
+	}
 
-	return revs
+	revs = SearchReviews(asin)
+
+	return revs, nil
 }
 
 func main() {

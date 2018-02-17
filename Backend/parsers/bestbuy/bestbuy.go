@@ -8,7 +8,7 @@ import (
 	"../../reviews"
 )
 
-func GetReviews(pattern string) []reviews.Review {
+func GetReviews(pattern string) ([]reviews.Review, error) {
 	var revs []reviews.Review
 
 	for i := 0; i < 20; i++ {
@@ -28,5 +28,5 @@ func GetReviews(pattern string) []reviews.Review {
 		revs = append(revs, review)
 	}
 
-	return revs
+	return revs, nil
 }
