@@ -16,9 +16,11 @@ import (
 	"../../logger"
 )
 
-type Query struct {
+type Response struct {
 	XMLName xml.Name `xml:"ItemSearchResponse"`
-	ASIN    string   `xml:"url>ASIN"`
+	Items   []struct {
+		ASIN string `xml:ASIN`
+	} `xml:"Items>Item"`
 }
 
 type Param struct {
@@ -76,7 +78,6 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 
 	// formatedParams[:len(formatedParams)-1] from [0] to [len()-1]. Used to avoid las &
 	stringToSign := fmt.Sprintf("GET\n%s\n%s\n%s", host, path, formatedParams[:len(formatedParams)-1])
-	fmt.Println(stringToSign)
 
 	// Calculate sha256 hash and then convert it to base64
 	hasher.Write([]byte(stringToSign))
@@ -118,13 +119,13 @@ func GetASINCode(item string) (string, error) {
 		return "", err
 	}
 
-	logger.Debug(string(body))
-
-	var q Query
-	err = xml.Unmarshal(body, &q)
+	var r Response
+	err = xml.Unmarshal(body, &r)
 	if err != nil {
 		return "", err
 	}
 
-	return q.ASIN, nil
+	fmt.Println(r.Items[0].ASIN)
+
+	return r.Items[0].ASIN, nil
 }
