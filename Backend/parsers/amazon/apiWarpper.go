@@ -16,6 +16,11 @@ import (
 	"../../logger"
 )
 
+type Query struct {
+	XMLName xml.Name `xml:"ItemSearchResponse"`
+	ASIN    string   `xml:"url>ASIN"`
+}
+
 type Param struct {
 	name  string
 	value string
@@ -63,7 +68,7 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 	sort.Sort(byByte(params))
 
 	// Concat params in URL query format and replace conflictive symbols
-	paramReplacer := strings.NewReplacer(",", "%2C", ":", "%3A")
+	paramReplacer := strings.NewReplacer(",", "%2C", ":", "%3A", " ", "%20")
 	for i := 0; i < len(params); i++ {
 		params[i].value = paramReplacer.Replace(params[i].value)
 		formatedParams += params[i].name + "=" + params[i].value + "&"
@@ -71,6 +76,7 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 
 	// formatedParams[:len(formatedParams)-1] from [0] to [len()-1]. Used to avoid las &
 	stringToSign := fmt.Sprintf("GET\n%s\n%s\n%s", host, path, formatedParams[:len(formatedParams)-1])
+	fmt.Println(stringToSign)
 
 	// Calculate sha256 hash and then convert it to base64
 	hasher.Write([]byte(stringToSign))
@@ -80,19 +86,20 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 	signatureReplacer := strings.NewReplacer("=", "%3D", "+", "%2B")
 	signature = signatureReplacer.Replace(signature)
 
-	return fmt.Sprintf("http://%s/%s?%sSignature=%s", host, path, formatedParams, signature)
+	return fmt.Sprintf("http://%s%s?%sSignature=%s", host, path, formatedParams, signature)
 }
 
 func GetASINCode(item string) (string, error) {
 	const apiURL = "webservices.amazon.com"
-	const path = "onca/xml"
+	const path = "/onca/xml"
 
 	// TODO: Sanitize input ",", ":" and "."
 	var params = []Param{
 		{"AWSAccessKeyId", os.Getenv("AWS_ACCESS_KEY_ID")},
-		// "AssociateTag":   os.Getenv("AWS_ASSOCIATE_ID"),
+		{"AssociateTag", os.Getenv("AWS_ASSOCIATE_TAG")},
 		{"Operation", "ItemSearch"},
-		{"Keywords", strings.Replace(item, " ", "%20", -1)}, // URL encode; " " is "%20"
+		{"SearchIndex", "All"},
+		{"Keywords", item},
 		{"Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z")},
 	}
 

@@ -51,6 +51,7 @@ func CallParser(w http.ResponseWriter, r *http.Request) {
 	reviews, err := parserFunction(item)
 	if err != nil {
 		logger.Error(err.Error())
+		return
 	}
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")

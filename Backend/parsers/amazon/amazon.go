@@ -1,18 +1,12 @@
 package amazon
 
 import (
-	"encoding/xml"
 	"fmt"
 	"math/rand"
 	"strings"
 
 	"../../reviews"
 )
-
-type Query struct {
-	XMLName xml.Name `xml:"urlset"`
-	ASIN    string   `xml:"url>ASIN"`
-}
 
 func SearchReviews(asin string) []reviews.Review {
 	const webURL = "www.amazon.com"
