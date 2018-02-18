@@ -1,6 +1,7 @@
 package amazon
 
 import (
+	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/xml"
@@ -43,6 +44,8 @@ func (p byByte) Less(i, j int) bool {
 	for i := 0; i < n; i++ {
 		if param1[i] < param2[i] {
 			return true
+		} else if param1[i] > param2[i] {
+			return false
 		}
 	}
 
@@ -50,21 +53,19 @@ func (p byByte) Less(i, j int) bool {
 }
 
 // REF: https://docs.aws.amazon.com/AWSECommerceService/latest/DG/rest-signature.html
-func GetSignedURL(host string, path string, params []Param) string {
-	var hasher = sha256.New()
+// REF: https://github.com/danharper/hmac-examples
+func GetSignedURL(host string, path string, params []Param, secretKey string) string {
+	// RFC 2104-compliant HMAC with SHA256
+	var hasher = hmac.New(sha256.New, []byte(secretKey))
 	var formatedParams = ""
 
-	// for i := 0; i < len(params); i++ {
-	// 	fmt.Println(params[i].name[0])
-	// }
+	// Params should go ordered by its byte (ascii code)
 	sort.Sort(byByte(params))
-	logger.Print("")
-	// for i := 0; i < len(params); i++ {
-	// 	fmt.Println(params[i].name[0])
-	// }
 
-	// Concat params in URL query format
+	// Concat params in URL query format and replace conflictive symbols
+	paramReplacer := strings.NewReplacer(",", "%2C", ":", "%3A")
 	for i := 0; i < len(params); i++ {
+		params[i].value = paramReplacer.Replace(params[i].value)
 		formatedParams += params[i].name + "=" + params[i].value + "&"
 	}
 
@@ -73,11 +74,11 @@ func GetSignedURL(host string, path string, params []Param) string {
 
 	// Calculate sha256 hash and then convert it to base64
 	hasher.Write([]byte(stringToSign))
-	signature := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+	signature := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
 
 	// Replace + and = symbols by its Hex value
-	replacer := strings.NewReplacer("=", "%3D", "+", "%2B")
-	signature = replacer.Replace(signature)
+	signatureReplacer := strings.NewReplacer("=", "%3D", "+", "%2B")
+	signature = signatureReplacer.Replace(signature)
 
 	return fmt.Sprintf("http://%s/%s?%sSignature=%s", host, path, formatedParams, signature)
 }
@@ -95,7 +96,7 @@ func GetASINCode(item string) (string, error) {
 		{"Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z")},
 	}
 
-	url := GetSignedURL(apiURL, path, params)
+	url := GetSignedURL(apiURL, path, params, os.Getenv("AWS_SECRET_KEY"))
 	logger.Debug(url)
 
 	resp, err := http.Get(url)
@@ -113,7 +114,10 @@ func GetASINCode(item string) (string, error) {
 	logger.Debug(string(body))
 
 	var q Query
-	xml.Unmarshal(body, &q)
+	err = xml.Unmarshal(body, &q)
+	if err != nil {
+		return "", err
+	}
 
 	return q.ASIN, nil
 }
