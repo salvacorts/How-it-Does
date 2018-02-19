@@ -16,6 +16,11 @@ import (
 	"../../logger"
 )
 
+const (
+	apiURL = "webservices.amazon.com"
+	path   = "/onca/xml"
+)
+
 type Response struct {
 	XMLName xml.Name `xml:"ItemSearchResponse"`
 	Items   []struct {
@@ -70,7 +75,7 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 	sort.Sort(byByte(params))
 
 	// Concat params in URL query format and replace conflictive symbols
-	paramReplacer := strings.NewReplacer(",", "%2C", ":", "%3A", " ", "%20")
+	paramReplacer := strings.NewReplacer(",", "%2C", ":", "%3A", " ", "%20", "=", "%3D", "+", "%2B")
 	for i := 0; i < len(params); i++ {
 		params[i].value = paramReplacer.Replace(params[i].value)
 		formatedParams += params[i].name + "=" + params[i].value + "&"
@@ -91,10 +96,6 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 }
 
 func GetASINCode(item string) (string, error) {
-	const apiURL = "webservices.amazon.com"
-	const path = "/onca/xml"
-
-	// TODO: Sanitize input ",", ":" and "."
 	var params = []Param{
 		{"AWSAccessKeyId", os.Getenv("AWS_ACCESS_KEY_ID")},
 		{"AssociateTag", os.Getenv("AWS_ASSOCIATE_TAG")},
@@ -105,7 +106,6 @@ func GetASINCode(item string) (string, error) {
 	}
 
 	url := GetSignedURL(apiURL, path, params, os.Getenv("AWS_SECRET_KEY"))
-	logger.Debug(url)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -122,10 +122,9 @@ func GetASINCode(item string) (string, error) {
 	var r Response
 	err = xml.Unmarshal(body, &r)
 	if err != nil {
+		logger.Error(string(body))
 		return "", err
 	}
-
-	fmt.Println(r.Items[0].ASIN)
 
 	return r.Items[0].ASIN, nil
 }

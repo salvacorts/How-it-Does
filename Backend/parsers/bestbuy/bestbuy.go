@@ -13,7 +13,7 @@ func GetReviews(pattern string) ([]reviews.Review, error) {
 
 	for i := 0; i < 20; i++ {
 		review := reviews.Review{
-			Rating: rand.Float32() * 5,
+			Rating: rand.Float64() * 5,
 			Origin: "bestbuy",
 			Author: "Tester",
 			Avatar: fmt.Sprintf("https://www.gravatar.com/avatar/%d?d=identicon", rand.Intn(10000)),

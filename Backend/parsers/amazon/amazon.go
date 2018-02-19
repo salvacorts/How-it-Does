@@ -10,11 +10,13 @@ import (
 
 func SearchReviews(asin string) []reviews.Review {
 	const webURL = "www.amazon.com"
-	var revs []reviews.Review
+	const n = 20
 
-	for i := 0; i < 20; i++ {
+	var revs = make([]reviews.Review, n)
+
+	for i := 0; i < n; i++ {
 		review := reviews.Review{
-			Rating: rand.Float32() * 5,
+			Rating: rand.Float64() * 5,
 			Origin: "amazon",
 			Author: "Tester",
 			Avatar: fmt.Sprintf("https://www.gravatar.com/avatar/%d?d=identicon", rand.Intn(10000)),
@@ -26,7 +28,7 @@ func SearchReviews(asin string) []reviews.Review {
 			},
 		}
 
-		revs = append(revs, review)
+		revs[i] = review
 	}
 
 	return revs
@@ -40,11 +42,10 @@ func GetReviews(pattern string) ([]reviews.Review, error) {
 		return nil, err
 	}
 
-	revs = SearchReviews(asin)
+	revs, err = ParseReviews(asin)
+	if err != nil {
+		return nil, err
+	}
 
 	return revs, nil
-}
-
-func main() {
-	GetReviews("drone")
 }

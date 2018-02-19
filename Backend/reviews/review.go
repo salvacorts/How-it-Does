@@ -1,8 +1,8 @@
 package reviews
 
 type Review struct {
-	Rating float32
 	Origin string
+	Rating float64
 	Author string
 	Avatar string
 	Text   string

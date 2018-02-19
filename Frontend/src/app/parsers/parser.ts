@@ -29,9 +29,6 @@ export class Parser {
     * @see https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
     */
    public async RetrieveReviews(pattern: string) {
-      // REF: https://www.w3schools.com/jsref/jsref_replace.asp
-      pattern = pattern.replace(/ /g, "+");
-
       return await this.http.get<Review[]>(this.url + pattern).toPromise();
    }
 }
