@@ -3,6 +3,7 @@ package amazon
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 
@@ -60,8 +61,16 @@ func ParseReviews(asin string) ([]r.Review, error) {
 	countString := doc.Find(countClass).Text()
 	countString = strings.Replace(countString, ",", "", -1)
 	totalReviewsCount, err := strconv.Atoi(countString)
-	reviewIndex := 0
+	maxReviewsCount, err := strconv.Atoi(os.Getenv("MAX_REVIEWS_PAGE"))
+	if err != nil {
+		return nil, err
+	}
 
+	if totalReviewsCount > maxReviewsCount {
+		totalReviewsCount = maxReviewsCount
+	}
+
+	reviewIndex := 0
 	revs := make([]r.Review, totalReviewsCount)
 	nPages := totalReviewsCount / reviewsPerPage
 	if totalReviewsCount%reviewsPerPage > 0 {

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"sort"
 	"strings"
@@ -21,10 +22,12 @@ const (
 	path   = "/onca/xml"
 )
 
+// https://docs.aws.amazon.com/AWSECommerceService/latest/DG/ItemSearch.html
 type Response struct {
 	XMLName xml.Name `xml:"ItemSearchResponse"`
 	Items   []struct {
 		ASIN string `xml:ASIN`
+		URL  string `xml:DetailPageURL`
 	} `xml:"Items>Item"`
 }
 
@@ -75,9 +78,10 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 	sort.Sort(byByte(params))
 
 	// Concat params in URL query format and replace conflictive symbols
-	paramReplacer := strings.NewReplacer(",", "%2C", ":", "%3A", " ", "%20", "=", "%3D", "+", "%2B")
 	for i := 0; i < len(params); i++ {
-		params[i].value = paramReplacer.Replace(params[i].value)
+		// QueryScape should permitt override some symbols :( but it doesnt
+		params[i].value = url.QueryEscape(params[i].value)
+		params[i].value = strings.Replace(params[i].value, "+", "%20", -1)
 		formatedParams += params[i].name + "=" + params[i].value + "&"
 	}
 
@@ -95,7 +99,7 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 	return fmt.Sprintf("http://%s%s?%sSignature=%s", host, path, formatedParams, signature)
 }
 
-func GetASINCode(item string) (string, error) {
+func GetItemInfo(item string) (string, error) {
 	var params = []Param{
 		{"AWSAccessKeyId", os.Getenv("AWS_ACCESS_KEY_ID")},
 		{"AssociateTag", os.Getenv("AWS_ASSOCIATE_TAG")},
