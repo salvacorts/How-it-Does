@@ -69,7 +69,7 @@ func (p byByte) Less(i, j int) bool {
 
 // REF: https://docs.aws.amazon.com/AWSECommerceService/latest/DG/rest-signature.html
 // REF: https://github.com/danharper/hmac-examples
-func GetSignedURL(host string, path string, params []Param, secretKey string) string {
+func getSignedURL(host string, path string, params []Param, secretKey string) string {
 	// RFC 2104-compliant HMAC with SHA256
 	var hasher = hmac.New(sha256.New, []byte(secretKey))
 	var formatedParams = ""
@@ -99,6 +99,7 @@ func GetSignedURL(host string, path string, params []Param, secretKey string) st
 	return fmt.Sprintf("http://%s%s?%sSignature=%s", host, path, formatedParams, signature)
 }
 
+// GetItemInfo calls Amazon API and get the information for `item`
 func GetItemInfo(item string) (string, error) {
 	var params = []Param{
 		{"AWSAccessKeyId", os.Getenv("AWS_ACCESS_KEY_ID")},
@@ -109,7 +110,7 @@ func GetItemInfo(item string) (string, error) {
 		{"Timestamp", time.Now().UTC().Format("2006-01-02T15:04:05Z")},
 	}
 
-	url := GetSignedURL(apiURL, path, params, os.Getenv("AWS_SECRET_KEY"))
+	url := getSignedURL(apiURL, path, params, os.Getenv("AWS_SECRET_KEY"))
 
 	resp, err := http.Get(url)
 	if err != nil {

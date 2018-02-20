@@ -93,6 +93,12 @@ export class ReviewsService {
          rating_sum += review.Rating;
          review.Expanded = false;
 
+         // If no avatar is provided, generate one randomly from gravatar
+         if (!review.Avatar) {
+            let rand = Math.floor(Math.random()*100000)+1
+            review.Avatar = `https://www.gravatar.com/avatar/${rand}?d=identicon`
+         }
+
          // Classify Tags. Data sctucture like:
          //    - Map:
          //       - Key: Tag including score which will be the average

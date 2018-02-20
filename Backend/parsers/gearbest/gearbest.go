@@ -16,7 +16,7 @@ func GetReviews(pattern string) ([]reviews.Review, error) {
 			Rating: rand.Float64() * 5,
 			Origin: "gearbest",
 			Author: "Tester",
-			Avatar: fmt.Sprintf("https://www.gravatar.com/avatar/%d?d=identicon", rand.Intn(10000)),
+			Avatar: "",
 			Text:   fmt.Sprintf("Thats what I think about %s", strings.Replace(pattern, "+", " ", -1)),
 			Tags: []reviews.Tag{
 				{"keyboard", 0.3},
