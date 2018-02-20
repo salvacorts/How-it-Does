@@ -4,6 +4,7 @@ import (
 	"../../reviews"
 )
 
+// GetReviews retrieves Reviews from amazon for `pattern`
 func GetReviews(pattern string) ([]reviews.Review, error) {
 	var revs []reviews.Review
 

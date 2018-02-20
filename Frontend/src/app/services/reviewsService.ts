@@ -113,7 +113,7 @@ export class ReviewsService {
             // match to the category of this review.
             this.classified_tags.forEach(
                (value, key) => {
-                  if (key.Value == tag.Value) {
+                  if (key.Name == tag.Name) {
                      key.Score = (key.Score + review.Rating) / 2
 
                      var array = value.get(category)

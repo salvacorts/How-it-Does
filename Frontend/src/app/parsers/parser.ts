@@ -68,7 +68,7 @@ export interface Review {
 /** A feature with an score */
 export interface Tag {
    /** Feature associated to this tag (Eg, keyboard) */
-   Value: string;
+   Name: string;
    /** Score for this feature */
    Score: number;
 }

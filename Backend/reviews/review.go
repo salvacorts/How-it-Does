@@ -10,6 +10,6 @@ type Review struct {
 }
 
 type Tag struct {
-	Value string
+	Name  string
 	Score float32
 }
