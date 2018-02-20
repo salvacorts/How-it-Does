@@ -1,12 +1,14 @@
 package amazon
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
 
 	r "../../reviews"
 )
@@ -27,9 +29,36 @@ const (
 	reviewsPerPage = 10
 )
 
+// Change from otiginal goquery.Text() to replace <br> for \n
+func extractText(s *goquery.Selection) string {
+	var buf bytes.Buffer
+
+	// Slightly optimized vs calling Each: no single selection object created
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.TextNode {
+			// Keep newlines and spaces, like jQuery
+			buf.WriteString(n.Data)
+		} else if n.Data == "br" {
+			buf.WriteString("\n")
+		}
+
+		if n.FirstChild != nil {
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c)
+			}
+		}
+	}
+	for _, n := range s.Nodes {
+		f(n)
+	}
+
+	return buf.String()
+}
+
 func extractReview(element *goquery.Selection) (r.Review, error) {
 	author := element.Find(authorClass).Text()
-	text := element.Find(textClass).Text()
+	text := extractText(element.Find(textClass))
 	ratingString := element.Find(ratingClass).Text()
 	ratingString = strings.Split(ratingString, " ")[0] // 1.0 out of 5 start
 
@@ -99,13 +128,11 @@ func ParseReviews(asin string) ([]r.Review, error) {
 		items := doc.Find(reviewClass)
 
 		// For each review node, extract it information
-		for i := range items.Nodes {
+		for i := 0; i < len(items.Nodes) && reviewIndex < totalReviewsCount; i, reviewIndex = i+1, reviewIndex+1 {
 			revs[reviewIndex], err = extractReview(items.Eq(i))
 			if err != nil {
 				return nil, err
 			}
-
-			reviewIndex++
 		}
 	}
 

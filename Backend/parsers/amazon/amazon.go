@@ -11,6 +11,8 @@ func GetReviews(pattern string) ([]reviews.Review, error) {
 	asin, err := GetItemInfo(pattern)
 	if err != nil {
 		return nil, err
+	} else if asin == "" {
+		return nil, nil
 	}
 
 	revs, err = ParseReviews(asin)

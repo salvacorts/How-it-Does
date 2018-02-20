@@ -23,7 +23,7 @@ mat-card-content.collapsed {
 }
 
 pre {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   white-space: pre-wrap
 }
 
@@ -67,7 +67,7 @@ mat-card {
 }
 
 /* TODO: Add HDPI support */
-@media only screen and (min-width: 800px) {
+@media only screen and (min-width: 1400px) {
   .grid-container {
     grid-template-columns: 1fr 1fr;
   }  

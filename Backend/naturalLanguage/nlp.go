@@ -18,19 +18,20 @@ type NaturalLanguageProcessor struct {
 func (nlp *NaturalLanguageProcessor) Init() error {
 	var err error
 
-	ctx := context.Background()
 	opt := options.WithAPIKey(os.Getenv("GCLOUD_API_KEY"))
+	ctx := context.Background()
 
 	nlp.client, err = api.NewClient(ctx, opt)
 
 	return err
 }
 
-// REF: https://godoc.org/google.golang.org/genproto/googleapis/cloud/language/v1#AnalyzeEntitySentimentRequest
-// REF: https://cloud.google.com/natural-language/docs/reference/libraries#client-libraries-install-go
-// REF: https://godoc.org/google.golang.org/genproto/googleapis/cloud/language/v1#Entity
-// REF: https://godoc.org/cloud.google.com/go/language/apiv1
+// AnalyzeText get tags from `text`
 func (nlp *NaturalLanguageProcessor) AnalyzeText(text string) ([]r.Tag, error) {
+	// REF: https://godoc.org/google.golang.org/genproto/googleapis/cloud/language/v1#AnalyzeEntitySentimentRequest
+	// REF: https://cloud.google.com/natural-language/docs/reference/libraries#client-libraries-install-go
+	// REF: https://godoc.org/google.golang.org/genproto/googleapis/cloud/language/v1#Entity
+	// REF: https://godoc.org/cloud.google.com/go/language/apiv1
 	req := &protoBuf.AnalyzeEntitySentimentRequest{
 		Document: &protoBuf.Document{
 			Source: &protoBuf.Document_Content{
