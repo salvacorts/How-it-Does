@@ -4,6 +4,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -12,7 +13,33 @@ import (
 	"./parsers"
 )
 
+func CheckEnvVariables() {
+	var env = map[string]string{
+		"GOOGLE_APPLICATION_CREDENTIALS": os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"),
+		"AWS_ACCESS_KEY_ID":              os.Getenv("AWS_ACCESS_KEY_ID"),
+		"AWS_SECRET_KEY":                 os.Getenv("AWS_SECRET_KEY"),
+		"AWS_ASSOCIATE_TAG":              os.Getenv("AWS_ASSOCIATE_TAG"),
+		"MAX_REVIEWS_PAGE":               os.Getenv("MAX_REVIEWS_PAGE"),
+	}
+
+	message := "These enviroment variables must exist:"
+	missing := false
+
+	for key, value := range env {
+		if value == "" {
+			message += "\n\t\t\t" + key
+			missing = true
+		}
+	}
+
+	if missing {
+		logger.Fatal(message)
+	}
+}
+
 func main() {
+	CheckEnvVariables()
+
 	router := mux.NewRouter()
 	router.HandleFunc("/{provider}/{item}", CallParser).Methods("GET")
 	router.HandleFunc("/availible", GetParsers).Methods("GET")

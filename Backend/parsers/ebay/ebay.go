@@ -17,7 +17,7 @@ func GetReviews(pattern string) ([]reviews.Review, error) {
 			Origin: "ebay",
 			Author: "Tester",
 			Avatar: "",
-			Text:   fmt.Sprintf("Thats what I think about %s", strings.Replace(pattern, "+", " ", -1)),
+			Text:   fmt.Sprintf("Thats what I <h1>think</h1> about %s", strings.Replace(pattern, "+", " ", -1)),
 			Tags: []reviews.Tag{
 				{"keyboard", 0.3},
 				{"mouse", -0.7},

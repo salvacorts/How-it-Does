@@ -1,29 +1,28 @@
 package natularLanguage
 
 import (
-	"os"
-
 	api "cloud.google.com/go/language/apiv1"
 	"golang.org/x/net/context"
-	options "google.golang.org/api/option"
 	protoBuf "google.golang.org/genproto/googleapis/cloud/language/v1"
 
 	r "../reviews"
 )
 
 type NaturalLanguageProcessor struct {
-	client *api.Client
+	Client *api.Client
 }
 
-func (nlp *NaturalLanguageProcessor) Init() error {
-	var err error
+func NewNLP() (*NaturalLanguageProcessor, error) {
+	client, err := api.NewClient(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
-	opt := options.WithAPIKey(os.Getenv("GCLOUD_API_KEY"))
-	ctx := context.Background()
+	nlp := &NaturalLanguageProcessor{
+		Client: client,
+	}
 
-	nlp.client, err = api.NewClient(ctx, opt)
-
-	return err
+	return nlp, err
 }
 
 // AnalyzeText get tags from `text`
@@ -44,7 +43,7 @@ func (nlp *NaturalLanguageProcessor) AnalyzeText(text string) ([]r.Tag, error) {
 		EncodingType: protoBuf.EncodingType_UTF8,
 	}
 
-	res, err := nlp.client.AnalyzeEntitySentiment(context.Background(), req)
+	res, err := nlp.Client.AnalyzeEntitySentiment(context.Background(), req)
 	if err != nil {
 		return nil, err
 	}
@@ -54,6 +53,8 @@ func (nlp *NaturalLanguageProcessor) AnalyzeText(text string) ([]r.Tag, error) {
 	for i := 0; i < len(res.Entities); i++ {
 		entity := res.Entities[i]
 		score := entity.Sentiment.Magnitude * entity.Sentiment.Score
+
+		// fmt.Printf("\n\nName: %s\tKind: %s\n\tScore: %f\n\tMagnitude: %f", entity.Name, entity.Type.String entity.Sentiment.Magnitude, entity.Sentiment.Score)
 
 		tags[i] = r.Tag{
 			Name:  entity.Name,

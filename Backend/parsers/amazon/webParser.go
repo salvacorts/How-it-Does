@@ -10,6 +10,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 
+	nlp "../../naturalLanguage"
 	r "../../reviews"
 )
 
@@ -56,7 +57,7 @@ func extractText(s *goquery.Selection) string {
 	return buf.String()
 }
 
-func extractReview(element *goquery.Selection) (r.Review, error) {
+func extractReview(element *goquery.Selection, lanProc *nlp.NaturalLanguageProcessor) (*r.Review, error) {
 	author := element.Find(authorClass).Text()
 	text := extractText(element.Find(textClass))
 	ratingString := element.Find(ratingClass).Text()
@@ -65,18 +66,21 @@ func extractReview(element *goquery.Selection) (r.Review, error) {
 	// Convert string to Float64 with 32 precession
 	rating, err := strconv.ParseFloat(ratingString, 32)
 	if err != nil {
-		return *new(r.Review), err
+		return nil, err
 	}
 
-	review := r.Review{
+	tags, err := lanProc.AnalyzeText(text)
+	if err != nil {
+		return nil, err
+	}
+
+	review := &r.Review{
 		Origin: "amazon",
 		Rating: rating,
 		Author: author,
 		Avatar: "", // There is no avatar parseable in amazon
 		Text:   text,
-		Tags: []r.Tag{
-			{"keyboard", 0.3}, // TODO: Send text to GCloud
-		},
+		Tags:   tags,
 	}
 
 	return review, nil
@@ -85,6 +89,11 @@ func extractReview(element *goquery.Selection) (r.Review, error) {
 // ParseReviews retrieve Reviews from amazon website
 // for the product identified by `asin`
 func ParseReviews(asin string) ([]r.Review, error) {
+	lanProc, err := nlp.NewNLP()
+	if err != nil {
+		return nil, err
+	}
+
 	path := fmt.Sprintf(reviewsPath, asin, 1)
 	doc, err := goquery.NewDocument(webURL + path)
 	if err != nil {
@@ -129,10 +138,12 @@ func ParseReviews(asin string) ([]r.Review, error) {
 
 		// For each review node, extract it information
 		for i := 0; i < len(items.Nodes) && reviewIndex < totalReviewsCount; i, reviewIndex = i+1, reviewIndex+1 {
-			revs[reviewIndex], err = extractReview(items.Eq(i))
+			review, err := extractReview(items.Eq(i), lanProc)
 			if err != nil {
 				return nil, err
 			}
+
+			revs[reviewIndex] = *review
 		}
 	}
 

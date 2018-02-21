@@ -6,10 +6,6 @@ import (
 	"github.com/google/goterm/term"
 )
 
-func Debug(message string, args ...interface{}) {
-	log.Println(term.Greenf(message+"\n", args...))
-}
-
 func Print(message string, args ...interface{}) {
 	log.Printf(message+"\n", args...)
 }

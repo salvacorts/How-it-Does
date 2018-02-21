@@ -4,6 +4,8 @@ import { Parser, Review, GetAvailibleParsers, Tag } from '../parsers/parser'
 
 export { Review } from '../parsers/parser';
 
+const THRESHOLD = 0.5
+
 /** Service to interact with reviews */
 @Injectable() // Singleton
 export class ReviewsService {
@@ -108,12 +110,14 @@ export class ReviewsService {
          for (let tag of review.Tags) {
             var added = false;
 
+            if (tag.Score < THRESHOLD && tag.Score > -THRESHOLD) continue
+
             // For each value, key pair, if tag equals to the key,
             // update its score and add this review to the array that
             // match to the category of this review.
             this.classified_tags.forEach(
                (value, key) => {
-                  if (key.Name == tag.Name) {
+                  if (key.Name.toLowerCase() == tag.Name.toLowerCase()) {
                      key.Score = (key.Score + review.Rating) / 2
 
                      var array = value.get(category)
