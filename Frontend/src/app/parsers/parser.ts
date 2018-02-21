@@ -29,7 +29,7 @@ export class Parser {
     * @see https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
     */
    public async RetrieveReviews(pattern: string) {
-      return await this.http.get<Review[]>(this.url + pattern).toPromise();
+      return await this.http.get<ReviewsCollection>(this.url + pattern).toPromise();
    }
 }
 
@@ -46,9 +46,16 @@ export async function GetAvailibleParsers(http: HttpClient) {
 }
 
 /** Interface to deserialize JSON object from API */
-export interface Review {
-   /** Provider who gives the feedback (Eg, amazon) */
+export interface ReviewsCollection {
+   /** Provider who gives the feedback */
    Origin: string;
+   /** URL to the product reviewed */
+   URL: string;
+   /** Array of reviews */
+   Reviews: Review[];
+}
+/** A review */
+export interface Review {
    /** Name of the author of this review */
    Author: string;
    /** URL for the Avatar os this author */
@@ -59,10 +66,15 @@ export interface Review {
    Text: string;
    /** Array of Tags associated to this review */
    Tags: Tag[];
+   
+   /** URL to the product reviewed */
+   productURL: string;
+   /** Provider who gives the feedback (Eg, amazon) */
+   origin: string;
    /** Indicates if this Review is expanded or not in the card */
-   Expanded: boolean;
+   expanded: boolean;
    /** Indicates if this review is expansible */
-   Expansible: boolean | undefined;
+   expansible: boolean | undefined;
 }
 
 /** A feature with an score */

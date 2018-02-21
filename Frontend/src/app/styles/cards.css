@@ -90,3 +90,7 @@ mat-card {
   padding-top: 2.5em;
   opacity: 0.4;
 }
+
+.mat-chip {
+    margin: 0.5em 0.5em 0.5em 0.5em !important;
+}

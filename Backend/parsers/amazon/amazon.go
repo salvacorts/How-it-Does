@@ -1,24 +1,28 @@
 package amazon
 
 import (
-	"../../reviews"
+	r "../../reviews"
 )
 
 // GetReviews retrieves Reviews from amazon for `pattern`
-func GetReviews(pattern string) ([]reviews.Review, error) {
-	var revs []reviews.Review
-
-	asin, err := GetItemInfo(pattern)
+func GetReviews(pattern string) (*r.ReviewsCollection, error) {
+	asin, url, err := GetItemInfo(pattern)
 	if err != nil {
 		return nil, err
 	} else if asin == "" {
 		return nil, nil
 	}
 
-	revs, err = ParseReviews(asin)
+	reviews, err := ParseReviews(asin)
 	if err != nil {
 		return nil, err
 	}
 
-	return revs, nil
+	collection := &r.ReviewsCollection{
+		Origin:  "amazon",
+		URL:     url,
+		Reviews: reviews,
+	}
+
+	return collection, nil
 }

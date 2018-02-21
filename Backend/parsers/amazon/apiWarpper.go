@@ -100,7 +100,7 @@ func getSignedURL(host string, path string, params []Param, secretKey string) st
 }
 
 // GetItemInfo calls Amazon API and get the information for `item`
-func GetItemInfo(item string) (string, error) {
+func GetItemInfo(item string) (string, string, error) {
 	var params = []Param{
 		{"AWSAccessKeyId", os.Getenv("AWS_ACCESS_KEY_ID")},
 		{"AssociateTag", os.Getenv("AWS_ASSOCIATE_TAG")},
@@ -114,22 +114,22 @@ func GetItemInfo(item string) (string, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	var r Response
 	err = xml.Unmarshal(body, &r)
 	if err != nil {
 		logger.Error(string(body))
-		return "", err
+		return "", "", err
 	}
 
-	return r.Items[0].ASIN, nil
+	return r.Items[0].ASIN, r.Items[0].URL, nil
 }

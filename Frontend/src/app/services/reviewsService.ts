@@ -1,18 +1,21 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Parser, Review, GetAvailibleParsers, Tag } from '../parsers/parser'
+import { Parser, Review, GetAvailibleParsers, Tag, ReviewsCollection } from '../parsers/parser'
 
 export { Review } from '../parsers/parser';
-
-const THRESHOLD = 0.5
 
 /** Service to interact with reviews */
 @Injectable() // Singleton
 export class ReviewsService {
+   /** Threshold for tags score. If in (-threshold, threshold), ignored */
+   static threshold = 0.5
+
    /** Average rating for `current_item` */
    public average_rating: number;
    /** Current searched item */
-   public current_item: string;
+   public current_item: string | undefined;
+   /** Current tag */
+   public current_tag: Tag | undefined;
    /** Indicates if this is still searching */
    public searching: boolean = false;
    /** Reviews classified by its category and tags */
@@ -25,6 +28,7 @@ export class ReviewsService {
       [CardKind.bad, new Array<Review>()],
       [CardKind.crap, new Array<Review>()]
    ]);
+   
    
    /** Number of already processed_parsers */
    private processed_parsers: number;
@@ -42,6 +46,10 @@ export class ReviewsService {
       )
 
       // NOTE: Add custom parsers here
+   }
+
+   public AcceptTag(tag: Tag): boolean {
+      return (tag.Score > ReviewsService.threshold || tag.Score < -ReviewsService.threshold)
    }
 
    /**
@@ -86,14 +94,17 @@ export class ReviewsService {
     * This function will classify each review of reviews by it kind and its tags.
     * @param reviews Array of reviews to classify
     */
-   private async ClassifyReviews(reviews: Review[]) {
+   private async ClassifyReviews(reviews: ReviewsCollection) {
       var rating_sum = 0;
 
-      for (let review of reviews) {     
+      for (let review of reviews.Reviews) {
+         review.origin = reviews.Origin
+         review.productURL = reviews.URL
+
          const category = this.GetCategoryFromRating(review.Rating)
          this.classified_reviews.get(category).push(review)
          rating_sum += review.Rating;
-         review.Expanded = false;
+         review.expanded = false;
 
          // If no avatar is provided, generate one randomly from gravatar
          if (!review.Avatar) {
@@ -110,17 +121,22 @@ export class ReviewsService {
          for (let tag of review.Tags) {
             var added = false;
 
-            if (tag.Score < THRESHOLD && tag.Score > -THRESHOLD) continue
+            // If thag has a low meaning, ignore it
+            if (!this.AcceptTag(tag)) continue
+
+            // How this reviewer is talking about this tag
+            let tagCategory = this.GetCategoryForTag(tag)
 
             // For each value, key pair, if tag equals to the key,
             // update its score and add this review to the array that
             // match to the category of this review.
             this.classified_tags.forEach(
                (value, key) => {
+                  // If tags matchs, add this review to its category for this tag
                   if (key.Name.toLowerCase() == tag.Name.toLowerCase()) {
                      key.Score = (key.Score + review.Rating) / 2
 
-                     var array = value.get(category)
+                     var array = value.get(tagCategory)
                      if (!array) array = new Array<Review>()
                      array.push(review)
 
@@ -132,7 +148,7 @@ export class ReviewsService {
             // If tag didnt exists on classified_tags, then create it and add the review to it.
             if (!added) {
                this.classified_tags.set(tag, new Map<CardKind, Array<Review>>([
-                  [category, new Array<Review>(review)]
+                  [tagCategory, new Array<Review>(review)]
                ]))
             }
          }
@@ -140,7 +156,7 @@ export class ReviewsService {
 
       // calculate average rating
       // TODO: https://math.stackexchange.com/a/106720
-      var average = rating_sum / reviews.length;
+      var average = rating_sum / reviews.Reviews.length;
       this.average_rating = (this.average_rating + average) / 2;
    }
 
@@ -166,6 +182,24 @@ export class ReviewsService {
       else category = CardKind.crap;
 
       return category;
+   }
+
+   /**
+    * Get category for the score of `tag`
+    * @param tag Tag to calculate category from
+    * 
+    * @returns `CardKind` calcutalet for the score of `tag`
+    */
+   public GetCategoryForTag(tag: Tag): CardKind {
+      var category: CardKind
+
+      if (tag.Score >= ReviewsService.threshold + 0.4) category = CardKind.great
+      else if (tag.Score < ReviewsService.threshold + 0.4 && tag.Score >= ReviewsService.threshold+0.2) category = CardKind.good
+      else if (tag.Score < ReviewsService.threshold + 0.2 && tag.Score > ReviewsService.threshold) category = CardKind.patchy
+      else if (tag.Score >= -ReviewsService.threshold - 0.2 && tag.Score < -ReviewsService.threshold) category = CardKind.bad
+      else category = CardKind.crap
+      
+      return category
    }
 }
 

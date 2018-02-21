@@ -5,27 +5,29 @@ import (
 	"math/rand"
 	"strings"
 
-	"../../reviews"
+	r "../../reviews"
 )
 
-func GetReviews(pattern string) ([]reviews.Review, error) {
-	var revs []reviews.Review
+func GetReviews(pattern string) (*r.ReviewsCollection, error) {
+	var revs []r.Review
 
 	for i := 0; i < 20; i++ {
-		review := reviews.Review{
+		review := r.Review{
 			Rating: rand.Float64() * 5,
-			Origin: "ebay",
 			Author: "Tester",
 			Avatar: "",
-			Text:   fmt.Sprintf("Thats what I <h1>think</h1> about %s", strings.Replace(pattern, "+", " ", -1)),
-			Tags: []reviews.Tag{
-				{"keyboard", 0.3},
-				{"mouse", -0.7},
-			},
+			Text:   fmt.Sprintf("Thats what I think about %s", strings.Replace(pattern, "+", " ", -1)),
+			Tags:   []r.Tag{},
 		}
 
 		revs = append(revs, review)
 	}
 
-	return revs, nil
+	collection := &r.ReviewsCollection{
+		Origin:  "ebay",
+		URL:     "www.ebay.com",
+		Reviews: revs,
+	}
+
+	return collection, nil
 }

@@ -13,7 +13,8 @@
          <mat-chip
             style="text-transform: capitalize;"
             *ngFor="let tag of ArrayFromTags()"
-            [color]="reviewsService.GetCategoryFromRating(tag.Score*5)"
+            [color]="reviewsService.GetCategoryForTag(tag)"
+            (click)="ToggleTag(tag)"
             selected="true">
                {{tag.Name}}
          </mat-chip>
@@ -26,34 +27,35 @@
          Great
          <img src="/assets/images/emoji/great.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.great"></cards>
+      <cards [kind]="cardKind.great" [tag]="reviewsService.current_tag">
+      </cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Good
          <img src="/assets/images/emoji/good.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.good"></cards>
+      <cards [kind]="cardKind.good" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Patchy
          <img src="/assets/images/emoji/patchy.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.patchy"></cards>
+      <cards [kind]="cardKind.patchy" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Bad
          <img src="/assets/images/emoji/bad.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.bad"></cards>
+      <cards [kind]="cardKind.bad" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
    <mat-tab [disabled]="!reviewsService.current_item">
       <ng-template mat-tab-label>
          Crap
          <img src="/assets/images/emoji/crap.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.crap"></cards>
+      <cards [kind]="cardKind.crap" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
 </mat-tab-group>

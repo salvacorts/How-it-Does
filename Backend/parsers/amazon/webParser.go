@@ -75,7 +75,6 @@ func extractReview(element *goquery.Selection, lanProc *nlp.NaturalLanguageProce
 	}
 
 	review := &r.Review{
-		Origin: "amazon",
 		Rating: rating,
 		Author: author,
 		Avatar: "", // There is no avatar parseable in amazon

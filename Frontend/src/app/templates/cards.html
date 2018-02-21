@@ -4,15 +4,28 @@
       <mat-card-header>
         <img mat-card-avatar src="{{review.Avatar}}">
         <mat-card-title>{{review.Author}}</mat-card-title>
-        <mat-card-subtitle style="text-transform: capitalize;">{{review.Origin}}</mat-card-subtitle>
+        <mat-card-subtitle style="text-transform: capitalize;">
+          <a [href]="review.productURL"></a>
+          {{review.origin}}
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content #content
-          [ngClass]="review.Expanded ? 'expanded' : 'collapsed'">
+          [ngClass]="review.expanded ? 'expanded' : 'collapsed'">
           <pre>{{review.Text}}</pre>
       </mat-card-content>
+      <mat-chip-list>
+        <span *ngFor="let tag of review.Tags">
+          <mat-chip style="text-transform: capitalize;" 
+            *ngIf="reviewsService.AcceptTag(tag)"
+            [color]="reviewsService.GetCategoryForTag(tag)" 
+            selected="false">
+            {{tag.Name}}
+          </mat-chip>
+        </span>
+      </mat-chip-list>
       <div class="expand-button" *ngIf="Overflow(content, review)">
-        <button mat-icon-button (click)="review.Expanded = !review.Expanded">
-          <mat-icon aria-label="Toggle">{{review.Expanded ? "keyboard_arrow_up" : "keyboard_arrow_down"}}</mat-icon>
+        <button mat-icon-button (click)="review.expanded = !review.expanded">
+          <mat-icon aria-label="Toggle">{{review.expanded ? "keyboard_arrow_up" : "keyboard_arrow_down"}}</mat-icon>
         </button>
       </div>
     </mat-card>

@@ -82,5 +82,5 @@ func CallParser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	json.NewEncoder(w).Encode(reviews)
+	json.NewEncoder(w).Encode(*reviews)
 }
