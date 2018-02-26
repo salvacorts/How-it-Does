@@ -26,16 +26,6 @@ export class TabsController {
       return Array.from(this.reviewsService.classified_tags.keys())
    }
 
-   public ToggleTag(tag: Tag) {
-      var newTag: Tag | undefined
-
-      if (this.reviewsService.current_tag != tag && this.reviewsService.current_tag != undefined) newTag = tag
-      else if (this.reviewsService.current_tag == undefined) newTag = tag
-      else newTag = undefined
-
-      this.reviewsService.current_tag = newTag
-   }
-
    /** Open dialog about Tags instructions */
    public OpenTagsDialog() {
       let dialogRef = this.dialog.open(TagsDialog, {

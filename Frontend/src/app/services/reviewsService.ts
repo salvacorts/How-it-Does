@@ -161,6 +161,26 @@ export class ReviewsService {
    }
 
    /**
+    * Get reviews for this kind
+    * 
+    * @param kind Kind to retrieve reviews about
+    */
+   public GetReviewsForCategory(kind: CardKind): Array<Review> {
+      var reviews: Array<Review>
+
+      if (this.current_tag != undefined) {
+         reviews = this.classified_tags.get(this.current_tag).get(kind)
+      } else {
+         reviews = this.classified_reviews.get(kind)
+      }
+
+      // Avoid "Cannot read property length of undefined" error
+      if (reviews == undefined) reviews = new Array<Review>()
+
+      return reviews
+   }
+
+   /**
     * Get category by its rating:
     *    [5, 4.5] = Great
     *    (4.5, 4] = Good

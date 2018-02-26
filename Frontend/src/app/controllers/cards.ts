@@ -25,22 +25,20 @@ export class CardsController implements OnChanges {
    * Retrieves reviews from Reviews service according to kind attribute 
    */
   ngOnInit() {
-    this.reviews = this.reviewsService.classified_reviews.get(this.kind);   
+    this.ngOnChanges()  
   }
 
+  /** 
+   * Called when change on members
+   */
   ngOnChanges() {
-    var reviews: Array<Review>
+    this.reviews = this.reviewsService.GetReviewsForCategory(this.kind)
+  }
 
-    if (this.tag != undefined) {
-      reviews = this.reviewsService.classified_tags.get(this.tag).get(this.kind)
-    } else {
-      reviews = this.reviewsService.classified_reviews.get(this.kind)
-    }
+  IconFromKind() {
+    var icon = this.kind.valueOf().toLowerCase()
 
-    // Avoid "Cannot read property length of undefined" error
-    if (reviews == undefined) reviews = new Array<Review>()
-
-    this.reviews = reviews
+    return `/assets/images/emoji/${icon}.png`
   }
 
   /**
