@@ -31,3 +31,25 @@ func GetReviews(pattern string) (*r.ReviewsCollection, error) {
 
 	return collection, nil
 }
+
+func GetReviewsS(pattern string) (*r.ReviewsCollection, error) {
+	sku, url, err := GetItemInfo(pattern)
+	if err != nil {
+		return nil, err
+	} else if sku == "" {
+		return nil, nil
+	}
+
+	reviews, err := ParseReviews(sku)
+	if err != nil {
+		return nil, err
+	}
+
+	collection := &r.ReviewsCollection{
+		Origin:  "bestbuy",
+		URL:     url,
+		Reviews: reviews,
+	}
+
+	return collection, nil
+}
