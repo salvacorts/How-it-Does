@@ -1,0 +1,24 @@
+## BUILDER ##
+FROM node:8.6 as builder
+
+# Add dependencies
+RUN mkdir /app
+ADD package.json package-lock.json /app/
+
+# Install dependencies
+WORKDIR /app
+RUN npm install
+
+# Copy source to container
+ADD ./ /app/
+
+# Build source
+ARG env=prod
+RUN npm run build -- --prod --environment $env
+
+
+## Deploy ##
+FROM nginx:1.13
+
+# Copy build from builder to deploy container
+COPY --from=builder /app/dist /usr/share/nginx/html

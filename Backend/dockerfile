@@ -1,0 +1,21 @@
+FROM golang
+
+# Create directory
+RUN mkdir /app
+ADD . /app/
+
+# Copy gcp credentials json
+ARG gcpCredsPath
+ENV GOOGLE_APPLICATION_CREDENTIALS /app/gpd-creds.json
+ADD ${gcpCredsPath} $GOOGLE_APPLICATION_CREDENTIALS
+
+# Move to directory and build source
+WORKDIR /app/
+RUN go get cloud.google.com/go/language/apiv1
+RUN go get github.com/PuerkitoBio/goquery
+RUN go get github.com/google/goterm/term
+RUN go get github.com/gorilla/mux
+RUN go build -o server .
+
+# Execute server main
+CMD ["/app/server"]
