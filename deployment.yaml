@@ -1,42 +1,61 @@
-# REF: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment
-
+## README:
+# You must set AWS_ACCESS_KEY_ID, AWS_SECRET_KEY, 
+# AWS_ASSOCIATE_TAG and MAX_REVIEWS_PAGE enviroment
+# variables and then run:
+#     $ envsubst < deployment.yaml > deployment.out.yaml
+#     $ kubectl create -f deployment.out.yaml
+#   or directly:
+#     $ envsubst < deployment.yaml > kubectl create -f -
+#
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: Reviews-Deployment
+   name: how-it-does
 spec:
+   replicas: 1
+   selector:
+      matchLabels:
+        app: how-it-does
+   template:
+      metadata:
+         labels:
+            app: how-it-does
+      spec:
+         containers:
+         - name: frontend
+           image: gcr.io/how-it-does/frontend
+           ports:
+           - name: http
+             containerPort: 80
+         - name: backend
+           image: gcr.io/how-it-does/backend
+           ports:
+           - name: http
+             containerPort: 8080
+           env: # NOTE: See Readme on file header
+           - name: AWS_ACCESS_KEY_ID
+             value: $AWS_ACCESS_KEY_ID
+           - name: AWS_SECRET_KEY
+             value: $AWS_SECRET_KEY
+           - name: AWS_ASSOCIATE_TAG
+             value: $AWS_ASSOCIATE_TAG
+           - name: MAX_REVIEWS_PAGE
+             value: $MAX_REVIEWS_PAGE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: how-it-does
+spec:
+  type: LoadBalancer
   selector:
-    matchLabels:
-      app: reviews
-  replicas: 1
-  template:   # create pods using pod definition in this template
-    metadata:
-      labels:
-        app: reviews
-    spec:
-      containers:
-      - name: web
-        image: nginx
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - mountPath: /src
-          name: reviews-src
-        command: ["/bin/sh", "-c"]
-        args: ["cd /src/Frontend/ && cp ./dist/* /usr/share/nginx/html"]
-
-      - name: api
-        image: golang
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - mountPath: /src
-          name: reviews-src
-        command: ["/bin/sh", "-c"]
-        args: ["cd /src/Backend/ && go build -o server && ./server"]
-
-    volumes:
-    - name: reviews-src
-      gitRepo:
-        repository: "https://github.com/salvacorts/reviews-web-parser.git"
-        revision: "2c808918dbd2c76eef3558e194aa7dee26525258"
+    app: how-it-does
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http-frontend
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    name: http-backend

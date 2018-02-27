@@ -1,13 +1,12 @@
 FROM golang
 
+# Copy gcp credentials json
+ENV GOOGLE_APPLICATION_CREDENTIALS /app/gpd-creds.json
+
 # Create directory
 RUN mkdir /app
+ADD ./creds.json $GOOGLE_APPLICATION_CREDENTIALS
 ADD . /app/
-
-# Copy gcp credentials json
-ARG gcpCredsPath
-ENV GOOGLE_APPLICATION_CREDENTIALS /app/gpd-creds.json
-ADD ${gcpCredsPath} $GOOGLE_APPLICATION_CREDENTIALS
 
 # Move to directory and build source
 WORKDIR /app/
