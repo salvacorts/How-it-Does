@@ -1,12 +1,13 @@
 ## README:
 # You must set these enviroment variables:
+#   - SERVER_STATIC_IP: Server static IP for the Loa Balancer
+#   - MAX_REVIEWS_PAGE: Max reviews to parse per webpage
 #   - AWS_ASSOCIATE_TAG: Amazon associate tag
 #   - AWS_ACCESS_KEY_ID: AWS access key 
 #   - AWS_SECRET_KEY: AWS secret key
-#   - MAX_REVIEWS_PAGE: Max reviews to parse per webpage
 #
 # Then run:
-#     $ envsubst < deployment.yaml | kubectl create -f -     
+#     $ envsubst < deployment.yaml | kubectl apply -f -     
 ##
 
 #### Deployment
@@ -56,6 +57,7 @@ metadata:
   name: how-it-does
 spec:
   type: LoadBalancer
+  loadBalancerIP: "$SERVER_STATIC_IP"
   selector:
     app: how-it-does
   ports:
