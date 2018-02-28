@@ -5,7 +5,7 @@
 #     $ envsubst < deployment.yaml > deployment.out.yaml
 #     $ kubectl create -f deployment.out.yaml
 #   or directly:
-#     $ envsubst < deployment.yaml > kubectl create -f -
+#     $ envsubst < deployment.yaml | kubectl create -f -
 #
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
@@ -23,24 +23,26 @@ spec:
       spec:
          containers:
          - name: frontend
-           image: gcr.io/how-it-does/frontend
+           image: gcr.io/how-it-does/frontend:v3
+           imagePullPolicy: Always
            ports:
            - name: http
              containerPort: 80
          - name: backend
-           image: gcr.io/how-it-does/backend
+           image: gcr.io/how-it-does/backend:v2
+           imagePullPolicy: Always
            ports:
            - name: http
              containerPort: 8080
            env: # NOTE: See Readme on file header
            - name: AWS_ACCESS_KEY_ID
-             value: $AWS_ACCESS_KEY_ID
+             value: "$AWS_ACCESS_KEY_ID"
            - name: AWS_SECRET_KEY
-             value: $AWS_SECRET_KEY
+             value: "$AWS_SECRET_KEY"
            - name: AWS_ASSOCIATE_TAG
-             value: $AWS_ASSOCIATE_TAG
+             value: "$AWS_ASSOCIATE_TAG"
            - name: MAX_REVIEWS_PAGE
-             value: $MAX_REVIEWS_PAGE
+             value: "$MAX_REVIEWS_PAGE"
 ---
 apiVersion: v1
 kind: Service
