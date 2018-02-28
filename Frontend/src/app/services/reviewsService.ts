@@ -67,16 +67,15 @@ export class ReviewsService {
       this.searching = true;
 
       // Clear all the arrays
-      this.classified_reviews.forEach((reviews: Array<Review>) => {
+      this.classified_reviews.forEach((reviews) => {
          reviews.length = 0
       })
 
       // Clear all tags
-      this.classified_tags.forEach((value) => {
-         value.forEach((array) => {
-            array.length = 0;
-         })
-      }) 
+      this.classified_tags.clear()
+
+      // If there was no item to search, return
+      if (!item) return
 
       // Retrieve reviews from API for each availible parser
       for (let parser of this.parsers) {

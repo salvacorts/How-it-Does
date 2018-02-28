@@ -23,13 +23,13 @@ spec:
       spec:
          containers:
          - name: frontend
-           image: gcr.io/how-it-does/frontend:v3
+           image: gcr.io/how-it-does/frontend:$FRONTEND_VERSION
            imagePullPolicy: Always
            ports:
            - name: http
              containerPort: 80
          - name: backend
-           image: gcr.io/how-it-does/backend:v2
+           image: gcr.io/how-it-does/backend:$BACKEND_VERSION
            imagePullPolicy: Always
            ports:
            - name: http
