@@ -1,12 +1,15 @@
 ## README:
-# You must set AWS_ACCESS_KEY_ID, AWS_SECRET_KEY, 
-# AWS_ASSOCIATE_TAG and MAX_REVIEWS_PAGE enviroment
-# variables and then run:
-#     $ envsubst < deployment.yaml > deployment.out.yaml
-#     $ kubectl create -f deployment.out.yaml
-#   or directly:
-#     $ envsubst < deployment.yaml | kubectl create -f -
+# You must set these enviroment variables:
+#   - AWS_ASSOCIATE_TAG: Amazon associate tag
+#   - AWS_ACCESS_KEY_ID: AWS access key 
+#   - AWS_SECRET_KEY: AWS secret key
+#   - MAX_REVIEWS_PAGE: Max reviews to parse per webpage
 #
+# Then run:
+#     $ envsubst < deployment.yaml | kubectl create -f -     
+##
+
+#### Deployment
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
@@ -43,7 +46,10 @@ spec:
              value: "$AWS_ASSOCIATE_TAG"
            - name: MAX_REVIEWS_PAGE
              value: "$MAX_REVIEWS_PAGE"
+
 ---
+
+#### Load Balancer to expose app
 apiVersion: v1
 kind: Service
 metadata:
