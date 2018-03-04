@@ -15,7 +15,6 @@
       <mat-chip-list>
         <span *ngFor="let tag of review.Tags">
           <mat-chip style="text-transform: capitalize;" 
-            *ngIf="reviewsService.AcceptTag(tag)"
             [color]="reviewsService.GetCategoryForTag(tag)" 
             selected="false">
             {{tag.Name}}

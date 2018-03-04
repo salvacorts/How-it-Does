@@ -7,9 +7,6 @@ export { Review } from '../parsers/parser';
 /** Service to interact with reviews */
 @Injectable() // Singleton
 export class ReviewsService {
-   /** Threshold for tags score. If in (-threshold, threshold), ignored */
-   static threshold = 0.5
-
    /** Average rating for `current_item` */
    public average_rating: number;
    /** Current searched item */
@@ -46,10 +43,6 @@ export class ReviewsService {
       )
 
       // NOTE: Add custom parsers here
-   }
-
-   public AcceptTag(tag: Tag): boolean {
-      return (tag.Score > ReviewsService.threshold || tag.Score < -ReviewsService.threshold)
    }
 
    /**
@@ -119,9 +112,6 @@ export class ReviewsService {
          //          - Value: Array of pointers to reviews
          for (let tag of review.Tags) {
             var added = false;
-
-            // If thag has a low meaning, ignore it
-            if (!this.AcceptTag(tag)) continue
 
             // How this reviewer is talking about this tag
             let tagCategory = this.GetCategoryForTag(tag)
@@ -208,15 +198,30 @@ export class ReviewsService {
     * @param tag Tag to calculate category from
     * 
     * @returns `CardKind` calcutalet for the score of `tag`
+    * 
+    * @see https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
     */
    public GetCategoryForTag(tag: Tag): CardKind {
       var category: CardKind
 
-      if (tag.Score >= ReviewsService.threshold + 0.4) category = CardKind.great
-      else if (tag.Score < ReviewsService.threshold + 0.4 && tag.Score >= ReviewsService.threshold+0.2) category = CardKind.good
-      else if (tag.Score < ReviewsService.threshold + 0.2 && tag.Score > ReviewsService.threshold) category = CardKind.patchy
-      else if (tag.Score >= -ReviewsService.threshold - 0.2 && tag.Score < -ReviewsService.threshold) category = CardKind.bad
-      else category = CardKind.crap
+      if (tag.Score >= 0.8 && tag.Magnitude >= 3.0) {
+         category = CardKind.great
+      } else if (tag.Score < 0.8 && tag.Score >= 0.4 &&
+                 tag.Magnitude < 3.0 && tag.Magnitude >= 1.5) {
+         category = CardKind.good
+      } else if (tag.Score < 0.4 && tag.Score >= 0.0 &&
+                 tag.Magnitude < 1.5 && tag.Magnitude >= 0) {
+         category = CardKind.patchy
+      } else if (tag.Score < 0.0 && tag.Score >= -0.6 &&
+                  tag.Magnitude < 4 && tag.Magnitude >= 0) {
+         category = CardKind.bad
+      } else if (tag.Score < 0.6 && tag.Magnitude >= 4) {
+         category + CardKind.crap
+      } else {
+         console.log(tag)
+      }
+
+      console.log(category)
       
       return category
    }

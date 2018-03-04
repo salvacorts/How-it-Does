@@ -8,6 +8,10 @@ import (
 	r "../reviews"
 )
 
+const (
+	salienceThreshold = 0.01
+)
+
 type NaturalLanguageProcessor struct {
 	Client *api.Client
 }
@@ -49,18 +53,23 @@ func (nlp *NaturalLanguageProcessor) AnalyzeText(text string) ([]r.Tag, error) {
 	}
 
 	var tags = make([]r.Tag, len(res.Entities))
+	var validTags = 0
 
 	for i := 0; i < len(res.Entities); i++ {
 		entity := res.Entities[i]
-		score := entity.Sentiment.Magnitude * entity.Sentiment.Score
 
-		// fmt.Printf("\n\nName: %s\tKind: %s\n\tScore: %f\n\tMagnitude: %f", entity.Name, entity.Type.String entity.Sentiment.Magnitude, entity.Sentiment.Score)
+		if entity.Salience < salienceThreshold {
+			continue
+		}
 
 		tags[i] = r.Tag{
-			Name:  entity.Name,
-			Score: score,
+			Name:      entity.Name,
+			Score:     entity.Sentiment.Score,
+			Magnitude: entity.Sentiment.Magnitude,
 		}
+
+		validTags++
 	}
 
-	return tags, nil
+	return tags[:validTags], nil
 }
