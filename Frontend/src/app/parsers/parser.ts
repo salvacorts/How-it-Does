@@ -83,6 +83,4 @@ export interface Tag {
    Name: string;
    /** Score for this feature */
    Score: number;
-   /** Magnitude of this feature */
-   Magnitude: number;
 }

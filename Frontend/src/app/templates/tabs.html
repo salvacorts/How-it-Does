@@ -11,8 +11,8 @@
       <button mat-button color="about" (click)="OpenTagsDialog()">What is it</button>
       <mat-chip-list>
          <mat-chip
-            style="text-transform: capitalize;"
             *ngFor="let tag of ArrayFromTags()"
+            style="text-transform: capitalize;"
             [color]="reviewsService.GetCategoryForTag(tag)"
             (click)="reviewsService.current_tag = tag"
             selected="true">

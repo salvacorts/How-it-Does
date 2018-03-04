@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	salienceThreshold = 0.01
+	salienceThreshold  = 0.01
+	magnitudeThreshold = 0.1
 )
 
 type NaturalLanguageProcessor struct {
@@ -53,23 +54,24 @@ func (nlp *NaturalLanguageProcessor) AnalyzeText(text string) ([]r.Tag, error) {
 	}
 
 	var tags = make([]r.Tag, len(res.Entities))
-	var validTags = 0
+	var validIndex = 0
 
 	for i := 0; i < len(res.Entities); i++ {
 		entity := res.Entities[i]
 
-		if entity.Salience < salienceThreshold {
+		if entity.Salience < salienceThreshold ||
+			entity.Sentiment.Magnitude < magnitudeThreshold {
+			// fmt.Printf("\n\n%s\n\tScore: %f\n\tMagnitude: %f\n\tSalience: %f", entity.Name, entity.Sentiment.Score, entity.Sentiment.Magnitude, entity.Salience)
 			continue
 		}
 
-		tags[i] = r.Tag{
-			Name:      entity.Name,
-			Score:     entity.Sentiment.Score,
-			Magnitude: entity.Sentiment.Magnitude,
+		tags[validIndex] = r.Tag{
+			Name:  entity.Name,
+			Score: entity.Sentiment.Score,
 		}
 
-		validTags++
+		validIndex++
 	}
 
-	return tags[:validTags], nil
+	return tags[:validIndex], nil
 }

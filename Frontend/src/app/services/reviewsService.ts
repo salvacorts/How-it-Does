@@ -204,25 +204,18 @@ export class ReviewsService {
    public GetCategoryForTag(tag: Tag): CardKind {
       var category: CardKind
 
-      if (tag.Score >= 0.8 && tag.Magnitude >= 3.0) {
+      if (tag.Score >= 0.8) {
          category = CardKind.great
-      } else if (tag.Score < 0.8 && tag.Score >= 0.4 &&
-                 tag.Magnitude < 3.0 && tag.Magnitude >= 1.5) {
+      } else if (tag.Score < 0.8 && tag.Score >= 0.4) {
          category = CardKind.good
-      } else if (tag.Score < 0.4 && tag.Score >= 0.0 &&
-                 tag.Magnitude < 1.5 && tag.Magnitude >= 0) {
+      } else if (tag.Score < 0.4 && tag.Score >= 0.0) {
          category = CardKind.patchy
-      } else if (tag.Score < 0.0 && tag.Score >= -0.6 &&
-                  tag.Magnitude < 4 && tag.Magnitude >= 0) {
+      } else if (tag.Score < 0.0 && tag.Score >= -0.6) {
          category = CardKind.bad
-      } else if (tag.Score < 0.6 && tag.Magnitude >= 4) {
-         category + CardKind.crap
       } else {
-         console.log(tag)
+         category = CardKind.crap
       }
 
-      console.log(category)
-      
       return category
    }
 }

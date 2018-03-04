@@ -79,7 +79,7 @@ func CallParser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Print("%s\tProvider: %s\tReviews: %d\tItem: %s", r.Host, provider, len(reviews.Reviews), item)
+	logger.Print("%s\tProvider: %s\tItem: %s\tReviews: %d", r.Host, provider, item, len(reviews.Reviews))
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(*reviews)
