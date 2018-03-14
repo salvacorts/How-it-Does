@@ -1,8 +1,6 @@
 # REF: https://medium.com/google-cloud/continuous-delivery-in-a-microservice-infrastructure-with-google-container-engine-docker-and-fb9772e81da7
 sudo: false
 
-language: go # Unimportant
-
 # Cache Gcloud SDK between commands
 cache:
   directories:
