@@ -61,7 +61,6 @@ func (nlp *NaturalLanguageProcessor) AnalyzeText(text string) ([]r.Tag, error) {
 
 		if entity.Salience < salienceThreshold ||
 			entity.Sentiment.Magnitude < magnitudeThreshold {
-			// fmt.Printf("\n\n%s\n\tScore: %f\n\tMagnitude: %f\n\tSalience: %f", entity.Name, entity.Sentiment.Score, entity.Sentiment.Magnitude, entity.Salience)
 			continue
 		}
 
