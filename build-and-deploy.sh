@@ -19,11 +19,11 @@ docker-credential-gcr configure-docker
 # Build Backend
 cd Backend/
 docker build -f dockerfile -t gcr.io/how-it-does/backend:latest .
-gcloud docker -- push gcr.io/how-it-does/backend:latest
+docker push gcr.io/how-it-does/backend:latest
 kubectl rolling-update backend --image=gcr.io/how-it-does/backend:latest
 
 # Move from backent to Frontend
 cd ../Frontend/
 docker build -f dockerfile -t gcr.io/how-it-does/frontend:latest .
-gcloud docker -- push gcr.io/how-it-does/frontend:latest
+docker push gcr.io/how-it-does/frontend:latest
 kubectl rolling-update frontend --image=gcr.io/how-it-does/frontend:latest
