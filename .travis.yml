@@ -19,7 +19,7 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: ./build-and-deploy.sh
+    script: bash ./build-and-deploy.sh
     skip_cleanup: true
     on:
       branch: Development
