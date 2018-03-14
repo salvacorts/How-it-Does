@@ -7,11 +7,9 @@
 set -e
 
 # Configure Google Cloud SDK
-echo "testttt"
-ls
-echo $GCLOUD_SERVICE_KEY_STG
-echo $GCLOUD_SERVICE_KEY_STG | base64 --decode -i > ${HOME}/Backend/creds.json
-echo "helloooo"
+ls -la
+echo $GCLOUD_SERVICE_KEY
+echo $GCLOUD_SERVICE_KEY | base64 --decode -i > ${HOME}/Backend/creds.json
 gcloud auth activate-service-account --key-file ${HOME}/Backend/creds.json
 gcloud --quiet config set project $PROJECT_NAME
 gcloud --quiet config set compute/zone $CLOUDSDK_COMPUTE_ZONE
