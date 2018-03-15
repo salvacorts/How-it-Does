@@ -16,6 +16,9 @@ gcloud --quiet config set compute/zone $CLOUDSDK_COMPUTE_ZONE
 echo $GCR_SERVICE_KEY | base64 --decode -i > ./gcr-creds.json
 docker login -u _json_key -p "$(cat ./gcr-creds.json)" https://gcr.io
 
+# Install Kubectl
+gcloud components install kubectl
+
 # Build Backend
 cd Backend/
 docker build -f dockerfile -t gcr.io/how-it-does/backend:latest .
