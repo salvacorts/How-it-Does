@@ -1,4 +1,5 @@
 
+[![MIT license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/salvacorts/how-it-does/Development/LICENSE)
 [![Build Status](https://travis-ci.org/salvacorts/how-it-does.svg)](https://travis-ci.org/salvacorts/how-it-does)
 # How it Does
 A web search engine which parses multiple stores searching for a product and retrieving and analysing reviews from customers.
