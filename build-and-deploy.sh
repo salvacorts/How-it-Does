@@ -13,8 +13,8 @@ gcloud --quiet config set project $PROJECT_NAME
 gcloud --quiet config set compute/zone $CLOUDSDK_COMPUTE_ZONE
 
 # Configure Docker to access Google Container Registry
-gcloud components install docker-credential-gcr
-docker-credential-gcr configure-docker --token-source="gcloud"
+echo $GCR_SERVICE_KEY | base64 --decode -i > ./gcr-creds.json
+docker login -u _json_key -p "$(cat ./gcr-creds.json)" https://gcr.io
 
 # Build Backend
 cd Backend/
