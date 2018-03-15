@@ -3,6 +3,10 @@ sudo: false
 
 language: bash
 
+branches:
+  only: 
+    - master
+
 # Cache Gcloud SDK between commands
 cache:
   directories:
