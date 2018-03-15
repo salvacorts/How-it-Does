@@ -24,10 +24,10 @@ gcloud container clusters get-credentials main-cluster
 cd Backend/
 docker build -f dockerfile -t gcr.io/how-it-does/backend:latest .
 docker push gcr.io/how-it-does/backend:latest
-kubectl set image deployment/how-it-does backend=backend:latest
+kubectl set image deployment/how-it-does backend=gcr.io/how-it-does/backend:latest
 
 # Move from backent to Frontend
 cd ../Frontend/
 docker build -f dockerfile -t gcr.io/how-it-does/frontend:latest .
 docker push gcr.io/how-it-does/frontend:latest
-kubectl set image deployment/how-it-does frontend=frontend:latest
+kubectl set image deployment/how-it-does frontend=gcr.io/how-it-does/frontend:latest
