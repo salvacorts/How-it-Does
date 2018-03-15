@@ -22,4 +22,4 @@ deploy:
     script: bash ./build-and-deploy.sh
     skip_cleanup: true
     on:
-      branch: all
+      branch: Development
