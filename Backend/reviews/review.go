@@ -1,8 +1,12 @@
 package reviews
 
+type ReviewsCollection struct {
+	Origin  string
+	URL     string
+	Reviews []Review
+}
 type Review struct {
-	Rating float32
-	Origin string
+	Rating float64
 	Author string
 	Avatar string
 	Text   string
@@ -10,6 +14,6 @@ type Review struct {
 }
 
 type Tag struct {
-	Value string
+	Name  string
 	Score float32
 }

@@ -1,10 +1,18 @@
-<h1 mat-dialog-title>Tags</h1>
+<h1 mat-dialog-title>Tags
+   <img src="/assets/images/ml.png" alt="AI" style="height: 1.8em; float: right;"/>
+</h1>
+
 <div mat-dialog-content>
+   We use Artificial Intelligence to detect features on reviews and analyse what do the author think about it.
+   <br>
+   <br>
    Click on a tag to get reviews related to this feature
    <p></p>
    <mat-chip-list>
       <mat-chip color="great" selected="true">Great feature</mat-chip>
+      <mat-chip color="good" selected="true">Good feature</mat-chip>
       <mat-chip color="patchy" selected="true">Patchy feature</mat-chip>
+      <mat-chip color="bad" selected="true">Bad feature</mat-chip>
       <mat-chip color="crap" selected="true">Crap feature</mat-chip>
    </mat-chip-list>
 </div>

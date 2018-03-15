@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ReviewsService, Review, CardKind } from '../services/reviewsService';
 import { trigger, animate, state, transition, style } from '@angular/animations';
+import { Tag } from '../parsers/parser'
 
 @Component({
   selector: 'cards',
@@ -9,9 +10,11 @@ import { trigger, animate, state, transition, style } from '@angular/animations'
 })
 
 /** Cards view controller */
-export class CardsController {
+export class CardsController implements OnChanges {
   /** Category common to this Cards */
   @Input() public kind: CardKind;
+  /** Current Tag */
+  @Input() public tag: Tag | undefined;
   /** Reviews */
   public reviews: Array<Review>;
 
@@ -22,7 +25,20 @@ export class CardsController {
    * Retrieves reviews from Reviews service according to kind attribute 
    */
   ngOnInit() {
-    this.reviews = this.reviewsService.classified_reviews.get(this.kind);   
+    this.ngOnChanges()  
+  }
+
+  /** 
+   * Called when change on members
+   */
+  ngOnChanges() {
+    this.reviews = this.reviewsService.GetReviewsForCategory(this.kind)
+  }
+
+  IconFromKind() {
+    var icon = this.kind.valueOf().toLowerCase()
+
+    return `/assets/images/emoji/${icon}.png`
   }
 
   /**
@@ -37,10 +53,10 @@ export class CardsController {
     // If its still not rendered on DOM
     if (element.clientHeight == 0) return false
     
-    if (review.Expansible == undefined) {
-      review.Expansible = element.clientHeight < element.scrollHeight
+    if (review.expansible == undefined) {
+      review.expansible = element.clientHeight < element.scrollHeight
     }
     
-    return review.Expansible
+    return review.expansible
   }
 }

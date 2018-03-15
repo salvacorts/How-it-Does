@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { ReviewsService, CardKind } from '../services/reviewsService';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Tag, Review } from '../parsers/parser'
 
 @Component({
    selector: 'tabs',
@@ -12,7 +13,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export class TabsController {
    /** Allows to use CardKind objects on the view */
    public cardKind = CardKind;
-   public currentTabIndex = 0;
 
    constructor(public reviewsService: ReviewsService, public dialog: MatDialog) {}
 
@@ -28,7 +28,7 @@ export class TabsController {
    /** Open dialog about Tags instructions */
    public OpenTagsDialog() {
       let dialogRef = this.dialog.open(TagsDialog, {
-         width: "450px",
+         width: "650px",
          data: {}
       });
    }

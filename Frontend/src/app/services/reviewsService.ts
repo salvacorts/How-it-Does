@@ -1,6 +1,6 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Parser, Review, GetAvailibleParsers, Tag } from '../parsers/parser'
+import { Parser, Review, GetAvailibleParsers, Tag, ReviewsCollection } from '../parsers/parser'
 
 export { Review } from '../parsers/parser';
 
@@ -10,7 +10,9 @@ export class ReviewsService {
    /** Average rating for `current_item` */
    public average_rating: number;
    /** Current searched item */
-   public current_item: string;
+   public current_item: string | undefined;
+   /** Current tag */
+   public current_tag: Tag | undefined;
    /** Indicates if this is still searching */
    public searching: boolean = false;
    /** Reviews classified by its category and tags */
@@ -23,6 +25,7 @@ export class ReviewsService {
       [CardKind.bad, new Array<Review>()],
       [CardKind.crap, new Array<Review>()]
    ]);
+   
    
    /** Number of already processed_parsers */
    private processed_parsers: number;
@@ -57,16 +60,15 @@ export class ReviewsService {
       this.searching = true;
 
       // Clear all the arrays
-      this.classified_reviews.forEach((reviews: Array<Review>) => {
+      this.classified_reviews.forEach((reviews) => {
          reviews.length = 0
       })
 
       // Clear all tags
-      this.classified_tags.forEach((value) => {
-         value.forEach((array) => {
-            array.length = 0;
-         })
-      }) 
+      this.classified_tags.clear()
+
+      // If there was no item to search, return
+      if (!item) return
 
       // Retrieve reviews from API for each availible parser
       for (let parser of this.parsers) {
@@ -84,14 +86,23 @@ export class ReviewsService {
     * This function will classify each review of reviews by it kind and its tags.
     * @param reviews Array of reviews to classify
     */
-   private async ClassifyReviews(reviews: Review[]) {
+   private async ClassifyReviews(reviews: ReviewsCollection) {
       var rating_sum = 0;
 
-      for (let review of reviews) {     
+      for (let review of reviews.Reviews) {
+         review.origin = reviews.Origin
+         review.productURL = reviews.URL
+
          const category = this.GetCategoryFromRating(review.Rating)
          this.classified_reviews.get(category).push(review)
          rating_sum += review.Rating;
-         review.Expanded = false;
+         review.expanded = false;
+
+         // If no avatar is provided, generate one randomly from gravatar
+         if (!review.Avatar) {
+            let rand = Math.floor(Math.random()*100000)+1
+            review.Avatar = `https://www.gravatar.com/avatar/${rand}?d=identicon`
+         }
 
          // Classify Tags. Data sctucture like:
          //    - Map:
@@ -102,15 +113,19 @@ export class ReviewsService {
          for (let tag of review.Tags) {
             var added = false;
 
+            // How this reviewer is talking about this tag
+            let tagCategory = this.GetCategoryForTag(tag)
+
             // For each value, key pair, if tag equals to the key,
             // update its score and add this review to the array that
             // match to the category of this review.
             this.classified_tags.forEach(
                (value, key) => {
-                  if (key.Value == tag.Value) {
+                  // If tags matchs, add this review to its category for this tag
+                  if (key.Name.toLowerCase() == tag.Name.toLowerCase()) {
                      key.Score = (key.Score + review.Rating) / 2
 
-                     var array = value.get(category)
+                     var array = value.get(tagCategory)
                      if (!array) array = new Array<Review>()
                      array.push(review)
 
@@ -122,7 +137,7 @@ export class ReviewsService {
             // If tag didnt exists on classified_tags, then create it and add the review to it.
             if (!added) {
                this.classified_tags.set(tag, new Map<CardKind, Array<Review>>([
-                  [category, new Array<Review>(review)]
+                  [tagCategory, new Array<Review>(review)]
                ]))
             }
          }
@@ -130,8 +145,28 @@ export class ReviewsService {
 
       // calculate average rating
       // TODO: https://math.stackexchange.com/a/106720
-      var average = rating_sum / reviews.length;
+      var average = rating_sum / reviews.Reviews.length;
       this.average_rating = (this.average_rating + average) / 2;
+   }
+
+   /**
+    * Get reviews for this kind
+    * 
+    * @param kind Kind to retrieve reviews about
+    */
+   public GetReviewsForCategory(kind: CardKind): Array<Review> {
+      var reviews: Array<Review>
+
+      if (this.current_tag != undefined) {
+         reviews = this.classified_tags.get(this.current_tag).get(kind)
+      } else {
+         reviews = this.classified_reviews.get(kind)
+      }
+
+      // Avoid "Cannot read property length of undefined" error
+      if (reviews == undefined) reviews = new Array<Review>()
+
+      return reviews
    }
 
    /**
@@ -156,6 +191,32 @@ export class ReviewsService {
       else category = CardKind.crap;
 
       return category;
+   }
+
+   /**
+    * Get category for the score of `tag`
+    * @param tag Tag to calculate category from
+    * 
+    * @returns `CardKind` calcutalet for the score of `tag`
+    * 
+    * @see https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
+    */
+   public GetCategoryForTag(tag: Tag): CardKind {
+      var category: CardKind
+
+      if (tag.Score >= 0.8) {
+         category = CardKind.great
+      } else if (tag.Score < 0.8 && tag.Score >= 0.4) {
+         category = CardKind.good
+      } else if (tag.Score < 0.4 && tag.Score >= 0.0) {
+         category = CardKind.patchy
+      } else if (tag.Score < 0.0 && tag.Score >= -0.6) {
+         category = CardKind.bad
+      } else {
+         category = CardKind.crap
+      }
+
+      return category
    }
 }
 

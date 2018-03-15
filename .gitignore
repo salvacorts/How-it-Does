@@ -14,3 +14,9 @@
 .glide/
 
 .vscode/
+
+.directory
+
+# Credentials
+Backend/*.json
+*.env

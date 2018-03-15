@@ -19,7 +19,8 @@ import {
   MatProgressBarModule,
   MatExpansionModule,
   MatChipsModule,
-  MatDialogModule
+  MatDialogModule,
+  MatDividerModule
  } from '@angular/material';
 
 @NgModule({
@@ -44,6 +45,7 @@ import {
     MatExpansionModule,
     MatChipsModule,
     MatDialogModule,
+    MatDividerModule
   ],
   providers: [ReviewsService, HttpClientModule],
   bootstrap: [SearchController, ResultsController, TabsController],

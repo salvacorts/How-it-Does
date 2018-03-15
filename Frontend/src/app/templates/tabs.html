@@ -10,49 +10,63 @@
       </mat-expansion-panel-header>
       <button mat-button color="about" (click)="OpenTagsDialog()">What is it</button>
       <mat-chip-list>
-         <mat-chip 
+         <mat-chip
             *ngFor="let tag of ArrayFromTags()"
-            [color]="reviewsService.GetCategoryFromRating(tag.Score*5)"
+            style="text-transform: capitalize;"
+            [color]="reviewsService.GetCategoryForTag(tag)"
+            (click)="reviewsService.current_tag = tag"
             selected="true">
-               {{tag.Value}}
+               {{tag.Name}}
          </mat-chip>
       </mat-chip-list>
+      <span *ngIf="reviewsService.current_tag != undefined">
+            <mat-divider></mat-divider>
+            <mat-chip
+                  style="text-transform: capitalize;"
+                  selected="true"
+                  [color]="reviewsService.GetCategoryForTag(reviewsService.current_tag)"
+                  [removable]="true" 
+                  (remove)="this.reviewsService.current_tag = undefined">
+                        {{reviewsService.current_tag.Name}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+      </span>
    </mat-expansion-panel>
 </div>
 <mat-tab-group>
    <mat-tab>
       <ng-template mat-tab-label>
-         Great
+         Great ({{reviewsService.GetReviewsForCategory(cardKind.great).length}})
          <img src="/assets/images/emoji/great.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.great"></cards>
+      <cards [kind]="cardKind.great" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
-   <mat-tab [disabled]="!reviewsService.current_item">
+   <mat-tab>
       <ng-template mat-tab-label>
-         Good
+         Good ({{reviewsService.GetReviewsForCategory(cardKind.good).length}})
          <img src="/assets/images/emoji/good.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.good"></cards>
+      <cards [kind]="cardKind.good" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
-   <mat-tab [disabled]="!reviewsService.current_item">
+   <mat-tab>
       <ng-template mat-tab-label>
-         Patchy
+         Patchy ({{reviewsService.GetReviewsForCategory(cardKind.patchy).length}})
          <img src="/assets/images/emoji/patchy.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.patchy"></cards>
+      <cards [kind]="cardKind.patchy" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
-   <mat-tab [disabled]="!reviewsService.current_item">
+   <mat-tab>
       <ng-template mat-tab-label>
-         Bad
+         Bad ({{reviewsService.GetReviewsForCategory(cardKind.bad).length}})
          <img src="/assets/images/emoji/bad.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.bad"></cards>
+      <cards [kind]="cardKind.bad" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
-   <mat-tab [disabled]="!reviewsService.current_item">
+   <mat-tab>
       <ng-template mat-tab-label>
-         Crap
+         Crap ({{reviewsService.GetReviewsForCategory(cardKind.crap).length}})
          <img src="/assets/images/emoji/crap.png" class="tab-icon" hspace="10">
       </ng-template>
-      <cards [kind]="cardKind.crap"></cards>
+      <cards [kind]="cardKind.crap" [tag]="reviewsService.current_tag"></cards>
    </mat-tab>
 </mat-tab-group>

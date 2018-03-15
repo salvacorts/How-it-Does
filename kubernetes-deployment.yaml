@@ -1,0 +1,71 @@
+## README:
+# You must set these enviroment variables:
+#   - SERVER_STATIC_IP: Server static IP for the Loa Balancer
+#   - MAX_REVIEWS_PAGE: Max reviews to parse per webpage
+#   - AWS_ASSOCIATE_TAG: Amazon associate tag
+#   - AWS_ACCESS_KEY_ID: AWS access key 
+#   - AWS_SECRET_KEY: AWS secret key
+#
+# Then run:
+#     $ envsubst < deployment.yaml | kubectl apply -f -     
+##
+
+#### Deployment
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+   name: how-it-does
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+        app: how-it-does
+   template:
+      metadata:
+         labels:
+            app: how-it-does
+      spec:
+         containers:
+         - name: frontend
+           image: gcr.io/how-it-does/frontend:latest
+           imagePullPolicy: Always
+           ports:
+           - name: http
+             containerPort: 80
+         - name: backend
+           image: gcr.io/how-it-does/backend:latest
+           imagePullPolicy: Always
+           ports:
+           - name: http
+             containerPort: 8080
+           env: # NOTE: See Readme on file header
+           - name: AWS_ACCESS_KEY_ID
+             value: "$AWS_ACCESS_KEY_ID"
+           - name: AWS_SECRET_KEY
+             value: "$AWS_SECRET_KEY"
+           - name: AWS_ASSOCIATE_TAG
+             value: "$AWS_ASSOCIATE_TAG"
+           - name: MAX_REVIEWS_PAGE
+             value: "$MAX_REVIEWS_PAGE"
+
+---
+
+#### Load Balancer to expose app
+apiVersion: v1
+kind: Service
+metadata:
+  name: how-it-does
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "$SERVER_STATIC_IP"
+  selector:
+    app: how-it-does
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http-frontend
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    name: http-backend
