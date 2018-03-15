@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 
 /** Base API URL */
-const apiURL = "http://http://35.202.235.70:8080"
+const apiURL = "http://35.202.235.70:8080"
 
 /** 
  * Parser class. It might be extended for custom parser that doesnt require an API 
