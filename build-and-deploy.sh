@@ -14,7 +14,7 @@ gcloud --quiet config set compute/zone $CLOUDSDK_COMPUTE_ZONE
 
 # Configure Docker to access Google Container Registry
 echo $GCR_SERVICE_KEY | base64 --decode -i > ./gcr-creds.json
-docker login -u _json_key --password-stdin "$(cat ./gcr-creds.json)" https://gcr.io
+docker login -u _json_key -p "$(cat ./gcr-creds.json)" https://gcr.io
 
 # Install Kubectl and authenticate
 gcloud components install kubectl
