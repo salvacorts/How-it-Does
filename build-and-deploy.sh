@@ -22,12 +22,12 @@ gcloud container clusters get-credentials main-cluster
 
 # Build Backend
 cd Backend/
-docker build -f dockerfile -t gcr.io/how-it-does/backend:latest .
-docker push gcr.io/how-it-does/backend:latest
-kubectl set image deployment/how-it-does backend=gcr.io/how-it-does/backend:latest
+docker build -f dockerfile -t gcr.io/how-it-does/backend:${TRAVIS_BUILD_NUMBER} .
+docker push gcr.io/how-it-does/backend:${TRAVIS_BUILD_NUMBER}
+kubectl set image deployment/how-it-does backend=gcr.io/how-it-does/backend:${TRAVIS_BUILD_NUMBER}
 
 # Move from backent to Frontend
 cd ../Frontend/
-docker build -f dockerfile -t gcr.io/how-it-does/frontend:latest .
-docker push gcr.io/how-it-does/frontend:latest
-kubectl set image deployment/how-it-does frontend=gcr.io/how-it-does/frontend:latest
+docker build -f dockerfile -t gcr.io/how-it-does/frontend:${TRAVIS_BUILD_NUMBER} .
+docker push gcr.io/how-it-does/frontend:${TRAVIS_BUILD_NUMBER}
+kubectl set image deployment/how-it-does frontend=gcr.io/how-it-does/frontend:${TRAVIS_BUILD_NUMBER}
