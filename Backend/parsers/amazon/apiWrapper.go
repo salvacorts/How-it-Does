@@ -22,6 +22,14 @@ const (
 	path   = "/onca/xml"
 )
 
+type apiError struct {
+	prob string
+}
+
+func (e *apiError) Error() string {
+	return fmt.Sprintf("%s", e.prob)
+}
+
 // https://docs.aws.amazon.com/AWSECommerceService/latest/DG/ItemSearch.html
 type Response struct {
 	XMLName xml.Name `xml:"ItemSearchResponse"`
@@ -129,6 +137,10 @@ func GetItemInfo(item string) (string, string, error) {
 	if err != nil {
 		logger.Error(string(body))
 		return "", "", err
+	}
+
+	if len(r.Items) <= 0 {
+		return "", "", &apiError{fmt.Sprintf("Cannot find any review for %s", item)}
 	}
 
 	return r.Items[0].ASIN, r.Items[0].URL, nil
