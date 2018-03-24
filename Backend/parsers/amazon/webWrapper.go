@@ -146,5 +146,5 @@ func ParseReviews(asin string) ([]r.Review, error) {
 		}
 	}
 
-	return revs, err
+	return revs, nil
 }
