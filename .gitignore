@@ -17,6 +17,8 @@
 
 .directory
 
+node_modules/
+
 # Credentials
 Backend/*.json
 *.env
