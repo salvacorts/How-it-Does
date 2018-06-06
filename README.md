@@ -1,6 +1,6 @@
 
 [![MIT license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/salvacorts/how-it-does/Development/LICENSE)
-[![Build Status](https://travis-ci.org/salvacorts/how-it-does.svg)](https://travis-ci.org/salvacorts/how-it-does)
+[![Build Status](https://api.travis-ci.org/salvacorts/How-it-Does.svg)](https://travis-ci.org/salvacorts/How-it-Does)
 
 # How it Does :detective:
 #### [Demo](http://35.202.235.70/)
