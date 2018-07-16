@@ -5,7 +5,7 @@ import (
 	"./amazon"
 )
 
-func GetAvailibleParsers() map[string]func(string) (*r.ReviewsCollection, error) {
+func GetavailableParsers() map[string]func(string) (*r.ReviewsCollection, error) {
 	return map[string]func(string) (*r.ReviewsCollection, error){
 		"amazon": amazon.GetReviews,
 	}

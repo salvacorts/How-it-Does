@@ -42,7 +42,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/{provider}/{item}", CallParser).Methods("GET")
-	router.HandleFunc("/availible", GetParsers).Methods("GET")
+	router.HandleFunc("/available", GetParsers).Methods("GET")
 
 	err := http.ListenAndServe("0.0.0.0:8080", router)
 	if err != nil {
@@ -53,8 +53,8 @@ func main() {
 func GetParsers(w http.ResponseWriter, r *http.Request) {
 	var identifiers []string
 
-	availibleParsers := parsers.GetAvailibleParsers()
-	for key := range availibleParsers {
+	availableParsers := parsers.GetavailableParsers()
+	for key := range availableParsers {
 		identifiers = append(identifiers, key)
 	}
 
@@ -67,7 +67,7 @@ func CallParser(w http.ResponseWriter, r *http.Request) {
 	provider := strings.ToLower(params["provider"])
 	item := params["item"]
 
-	parserFunction, ok := parsers.GetAvailibleParsers()[provider]
+	parserFunction, ok := parsers.GetavailableParsers()[provider]
 	if !ok {
 		logger.Error("%s '%s' is not a valid provider", r.Host, provider)
 		return

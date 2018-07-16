@@ -1,7 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-
-/** Base API URL */
-const apiURL = "http://35.202.235.70:8080"
+import { environment } from '../../environments/environment';
 
 /** 
  * Parser class. It might be extended for custom parser that doesnt require an API 
@@ -17,7 +15,7 @@ export class Parser {
     * @param http HTTP client service
     */
    constructor(provider: string, protected http: HttpClient) {
-      this.url = `${apiURL}/${provider}/`;
+      this.url = `${environment.apiURL}/${provider}/`;
    }
    
    /**
@@ -34,15 +32,15 @@ export class Parser {
 }
 
 /**
- * Get Availible parsers from API to parse reviews from them
+ * Get available parsers from API to parse reviews from them
  * @param http HTTP client service
  * 
- * @returns Promise of an Array of strings; each string will be an availible parser
+ * @returns Promise of an Array of strings; each string will be an available parser
  * 
  * @see https://labs.encoded.io/2016/12/08/asyncawait-with-angular/
  */
-export async function GetAvailibleParsers(http: HttpClient) {
-   return await http.get<string[]>(apiURL + "/availible").toPromise();
+export async function GetavailableParsers(http: HttpClient) {
+   return await http.get<string[]>(environment.apiURL + "/available").toPromise();
 }
 
 /** Interface to deserialize JSON object from API */

@@ -1,6 +1,6 @@
 import { Component, Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Parser, Review, GetAvailibleParsers, Tag, ReviewsCollection } from '../parsers/parser'
+import { Parser, Review, GetavailableParsers, Tag, ReviewsCollection } from '../parsers/parser'
 
 export { Review } from '../parsers/parser';
 
@@ -34,7 +34,7 @@ export class ReviewsService {
 
    constructor(@Inject(HttpClient) http: HttpClient) {
       // Automatically get availible parsers from API and add them to parsers array
-      GetAvailibleParsers(http).then(
+      GetavailableParsers(http).then(
          parsers => {
             for (let parser of parsers) {
                this.parsers.push(new Parser(parser, http));
@@ -87,16 +87,15 @@ export class ReviewsService {
     * @param reviews Array of reviews to classify
     */
    private async ClassifyReviews(reviews: ReviewsCollection) {
-      var rating_sum = 0;
-
       for (let review of reviews.Reviews) {
          review.origin = reviews.Origin
          review.productURL = reviews.URL
 
          const category = this.GetCategoryFromRating(review.Rating)
          this.classified_reviews.get(category).push(review)
-         rating_sum += review.Rating;
          review.expanded = false;
+
+         this.average_rating = (this.average_rating + review.Rating) / 2;
 
          // If no avatar is provided, generate one randomly from gravatar
          if (!review.Avatar) {
@@ -142,11 +141,6 @@ export class ReviewsService {
             }
          }
       }
-
-      // calculate average rating
-      // TODO: https://math.stackexchange.com/a/106720
-      var average = rating_sum / reviews.Reviews.length;
-      this.average_rating = (this.average_rating + average) / 2;
    }
 
    /**
